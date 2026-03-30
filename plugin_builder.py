@@ -27,12 +27,13 @@ import errno
 import shutil
 from string import Template
 import codecs
+import configparser
 import subprocess
-from .utils import VersionUtils
+
 # Import the PyQt and QGIS libraries
 from qgis.PyQt.QtCore import QFileInfo, QUrl, QFile, QDir, QSettings
 from qgis.PyQt.QtWidgets import (
-    QAction, QFileDialog, QMessageBox, QToolBar, QDialog )
+    QAction, QFileDialog, QMessageBox)
 
 from qgis.PyQt.QtGui import (QIcon,
                          QDesktopServices,
@@ -50,8 +51,7 @@ from .plugin_builder_dialog import PluginBuilderDialog
 from .result_dialog import ResultDialog
 from .select_tags_dialog import SelectTagsDialog
 from .plugin_specification import PluginSpecification
-from . import PLUGIN_NAME, PLUGIN_VERSION
-from .constants import ENVIRO_FILES, ENVIRO_FOLDERS
+
 
 class PluginBuilder:
     """A QGIS plugin that allows you to build QGIS plugins."""
@@ -74,11 +74,8 @@ class PluginBuilder:
         self.plugin_builder_path = os.path.dirname(__file__)
 
         # class members
-        self.actions = []
-        self.toolbar = None
+        self.action = None
         self.dialog = None
-        self.menu = u'&EnviroSolutions'
-        self.icon_path = os.path.join(str(self.plugin_builder_path), 'icon_enviro.svg')
         self.plugin_path = None
         self.template = None
         self.shared_dir = None
@@ -87,99 +84,21 @@ class PluginBuilder:
     # noinspection PyPep8Naming
     def initGui(self):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
-        self.toolbar = self.iface.mainWindow().findChild(QToolBar, 'EnviroSolutions')
+        # Create action that will start plugin configuration
+        self.action = QAction(
+            QIcon(':/plugins/plugin_builder/icon.png'),
+            'Plugin Builder', self.iface.mainWindow())
+        # connect the action to the run method
+        self.action.triggered.connect(self.run)
 
-        if not self.toolbar:
-            self.toolbar = self.iface.addToolBar(u'EnviroSolutions')
-            self.toolbar.setObjectName(u'EnviroSolutions')
-
-        self.add_action(
-            self.icon_path,
-            text=PLUGIN_NAME,
-            callback=self.run,
-            parent=self.iface.mainWindow())
-    
-
-    def add_action(
-        self,
-        icon_path,
-        text,
-        callback,
-        enabled_flag=True,
-        add_to_menu=True,
-        add_to_toolbar=True,
-        status_tip=None,
-        whats_this=None,
-        parent=None):
-        """Add a toolbar icon to the toolbar.
-
-        :param icon_path: Path to the icon for this action. Can be a resource
-            path (e.g. ':/plugins/foo/bar.png') or a normal file system path.
-        :type icon_path: str
-
-        :param text: Text that should be shown in menu items for this action.
-        :type text: str
-
-        :param callback: Function to be called when the action is triggered.
-        :type callback: function
-
-        :param enabled_flag: A flag indicating if the action should be enabled
-            by default. Defaults to True.
-        :type enabled_flag: bool
-
-        :param add_to_menu: Flag indicating whether the action should also
-            be added to the menu. Defaults to True.
-        :type add_to_menu: bool
-
-        :param add_to_toolbar: Flag indicating whether the action should also
-            be added to the toolbar. Defaults to True.
-        :type add_to_toolbar: bool
-
-        :param status_tip: Optional text to show in a popup when mouse pointer
-            hovers over the action.
-        :type status_tip: str
-
-        :param parent: Parent widget for the new action. Defaults None.
-        :type parent: QWidget
-
-        :param whats_this: Optional text to show in the status bar when the
-            mouse pointer hovers over the action.
-
-        :returns: The action that was created. Note that the action is also
-            added to self.actions list.
-        :rtype: QAction
-        """
-
-        icon = QIcon(icon_path)
-        action = QAction(icon, text, parent)
-        action.triggered.connect(callback)
-        action.setEnabled(enabled_flag)
-
-        if status_tip is not None:
-            action.setStatusTip(status_tip)
-
-        if whats_this is not None:
-            action.setWhatsThis(whats_this)
-
-        if add_to_menu:
-            self.iface.addPluginToMenu(
-                self.menu,
-                action)
-
-        self.actions.append(action)
-
-        if add_to_toolbar:
-            self.toolbar.addAction(action)
-
-        return action
+        # Add toolbar button and menu item
+        self.iface.addToolBarIcon(self.action)
+        self.iface.addPluginToMenu('&Plugin Builder', self.action)
 
     def unload(self):
-        for action in self.actions:
-            self.iface.removePluginMenu(
-                u'&EnviroSolutions',
-                action
-            )
-            self.toolbar.removeAction(action)
+        """Removes the plugin menu item and icon from QGIS GUI."""
+        self.iface.removePluginMenu('&Plugin Builder', self.action)
+        self.iface.removeToolBarIcon(self.action)
 
     def _get_plugin_path(self):
         """Prompt the user for the path where the plugin should be written to.
@@ -277,33 +196,6 @@ class PluginBuilder:
                 QFile.ReadGroup | QFile.ExeGroup | QFile.ReadOther |
                 QFile.ExeOther)
 
-    def _prepare_enviro_files(self):
-        """Prepare enviro files."""
-
-        # create folders
-        self._make_folders(ENVIRO_FOLDERS, self.plugin_path)
-
-        # create utils and constants files
-        self._copy_files(ENVIRO_FILES, self.shared_dir, self.plugin_path)
-
-        # copying logo and icon happens in the _prepare_specific_files method
-
-    def _copy_files(self, files, source_dir, plugin_dir):
-        """Copy files from source_dir to specified folders."""
-        for file, folder in files.items():           
-            source_file = os.path.join(source_dir, file)
-            if folder == 'default':
-                destination_file = os.path.join(plugin_dir, file)
-            else:
-                destination_file = os.path.join(plugin_dir, folder, file)
-            copy(source_file, destination_file)
-    
-    def _make_folders(self, folders, destination_dir):
-        """Make folders in destination_dir."""
-        for folder in folders:
-            destination_folder = os.path.join(destination_dir, folder)
-            os.makedirs(destination_folder, exist_ok=True)
-
     def _prepare_specific_files(self, specification):
         """Prepare specific templates and files.
 
@@ -352,7 +244,7 @@ class PluginBuilder:
         popped = template.substitute(result_map)
         # write the results info to the README txt file
         readme_txt = codecs.open(os.path.join(
-            str(self.plugin_path), 'README.md'), 'w', 'utf-8')
+            str(self.plugin_path), 'README.txt'), 'w', 'utf-8')
         readme_txt.write(popped)
         readme_txt.close()
 
@@ -377,11 +269,7 @@ class PluginBuilder:
         metadata_file.write(
             'qgisMinimumVersion=%s\n' % specification.qgis_minimum_version)
         metadata_file.write(
-            'qgisMaximumVersion=%s\n' % specification.qgis_maximum_version)
-        metadata_file.write(
             'description=%s\n' % specification.description)
-        metadata_file.write(
-            'supportsQt6=true\n')
         metadata_file.write(
             'version=%s\n' % specification.plugin_version)
         metadata_file.write(
@@ -458,6 +346,11 @@ class PluginBuilder:
             'TemplateVCSFormat': specification.template_map[
                 'TemplateVCSFormat']}
         results_popped = template.substitute(result_map)
+        # write the results info to the README HTML file
+        readme = codecs.open(os.path.join(
+            str(self.plugin_path), 'README.html'), 'w', 'utf-8')
+        readme.write(results_popped)
+        readme.close()
         return results_popped, template_module_name
 
     def _create_plugin_directory(self):
@@ -498,7 +391,7 @@ class PluginBuilder:
 
         tag_dialog.listView.setModel(model)
         tag_dialog.show()
-        ok = tag_dialog.exec()
+        ok = tag_dialog.exec_()
         if ok:
             selected = tag_dialog.listView.selectedIndexes()
             seltags = []
@@ -514,9 +407,11 @@ class PluginBuilder:
         self.dialog = PluginBuilderDialog(
             stored_output_path=self._last_used_path())
 
-        # GUI window title
-        self.dialog.setWindowTitle('%s %s' % (PLUGIN_NAME, PLUGIN_VERSION))
-        self.dialog.setWindowIcon(QIcon(self.icon_path))
+        # get version
+        cfg = configparser.ConfigParser()
+        cfg.read(os.path.join(self.plugin_builder_path, 'metadata.txt'))
+        version = cfg.get('general', 'version')
+        self.dialog.setWindowTitle('QGIS Plugin Builder - {}'.format(version))
 
         # connect the ok button to our method
         self.dialog.button_box.helpRequested.connect(self.show_help)
@@ -525,8 +420,8 @@ class PluginBuilder:
         # show the dialog
         self.dialog.show()
         self.dialog.adjustSize()
-        result = self.dialog.exec()
-        if result == 0:
+        result = self.dialog.exec_()
+        if result == QFileDialog.Rejected:
             return
 
         specification = PluginSpecification(self.dialog)
@@ -546,9 +441,6 @@ class PluginBuilder:
         specification.template_map.update(template_map)
 
         self._prepare_code(specification)
-        if specification.gen_i18n:
-            self._prepare_i18n()
-        self._prepare_enviro_files()
         if specification.gen_help:
             self._prepare_help()
             # create the sphinx config file and sample index.rst file
@@ -564,7 +456,8 @@ class PluginBuilder:
         if specification.gen_scripts:
             self._prepare_scripts()
 
-        
+        if specification.gen_i18n:
+            self._prepare_i18n()
 
         #resource = QFile(os.path.join(self.template_dir, 'resources.qrc'))
         #resource.copy(os.path.join(self.plugin_path, 'resources.qrc'))
@@ -576,56 +469,29 @@ class PluginBuilder:
 
         self._prepare_readme(specification, template_module_name)
         self._prepare_metadata(specification)
-        
-
-        ''' instead of compiling the resource file, we will just copy resources.py it is implemented in _prepare_enviro_files'''
-        # # Attempt to compile the resource file
-        # if VersionUtils.isCompatibleQtVersion(6):
-        #     tools_to_try = ['pyrcc6', 'pyside6-rcc', 'pyrcc5']
-        # else:
-        #     tools_to_try = ['pyrcc5', 'pyrcc6', 'pyside6-rcc']
-
-        # compiled_successfully = False
-        
-        # for rcc_tool in tools_to_try:
-        #     try:
-        #         cmd = [
-        #             rcc_tool, '-o',
-        #             os.path.join(self.plugin_path, 'resources.py'),
-        #             os.path.join(self.plugin_path, 'resources.qrc')
-        #         ]
-        #         subprocess.check_call(cmd, shell=(os.name == 'nt'))
-        #         compiled_successfully = True
-        #         break
-                
-        #     except (FileNotFoundError, subprocess.CalledProcessError):
-        #         continue
-
-        # if not compiled_successfully:
-        #     QMessageBox.warning(
-        #         None, 'Unable to Compile resources.qrc',
-        #         f"None of the resource compilers ({', '.join(tools_to_try)}) were found or worked. "
-        #         f"You'll have to manually compile the resources.qrc file "
-        #         f"before installing your plugin.")
-                
-
-        # # Replace hardcoded PyQt5/PyQt6 imports with qgis.PyQt
-        # res_path = os.path.join(self.plugin_path, 'resources.py')
-        # if os.path.exists(res_path):
-        #     with open(res_path, 'r', encoding='utf8') as f:
-        #         content = f.read()
-                
-        #         content = content.replace('from PyQt5 import QtCore', 'from qgis.PyQt import QtCore')
-        #         content = content.replace('from PyQt6 import QtCore', 'from qgis.PyQt import QtCore')
-                
-        #         with open(res_path, 'w', encoding='utf8') as f:
-        #             f.write(content)
+        # Attempt to compile the resource file
+        try:
+            cmd = ['pyrcc5', '-o',
+                   os.path.join(self.plugin_path, 'resources.py'),
+                   os.path.join(self.plugin_path, 'resources.qrc')]
+            subprocess.check_call(cmd)
+        except subprocess.CalledProcessError:
+            QMessageBox.warning(
+                None, 'Unable to Compile resources.qrc',
+                'There was an error compiling your resources.qrc file. '
+                'Compile it manually using pyrcc5.')
+        except FileNotFoundError:
+            QMessageBox.warning(
+                None, 'Unable to Compile resources.qrc',
+                "The resource compiler pyrcc5 was not found in your path. "
+                "You'll have to manually compile the resources.qrc file "
+                "with pyrcc5 before installing your plugin.")
 
         # show the results
         results_dialog = ResultDialog()
         results_dialog.web_view.setHtml(results_popped)
         results_dialog.show()
-        results_dialog.exec()
+        results_dialog.exec_()
 
     def populate_template(self, specification, template_dir,
                           template_name, output_name):

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>591</width>
+    <width>512</width>
     <height>413</height>
    </rect>
   </property>
@@ -75,46 +75,8 @@ p, li { white-space: pre-wrap; }
      </property>
      <widget class="QWidget" name="page0">
       <layout class="QGridLayout" name="gridLayout_3">
-       <item row="6" column="0">
-        <widget class="QLabel" name="qgis_minimum_version_label">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>Minimum QGIS version</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-         <property name="buddy">
-          <cstring>qgis_minimum_version</cstring>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <spacer name="verticalSpacer_4">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="2" column="1" colspan="2">
-        <widget class="QLineEdit" name="title">
+       <item row="3" column="1" colspan="2">
+        <widget class="QLineEdit" name="description">
          <property name="minimumSize">
           <size>
            <width>0</width>
@@ -128,32 +90,20 @@ p, li { white-space: pre-wrap; }
           </size>
          </property>
          <property name="toolTip">
-          <string>This is the name for your plugin that will be displayed in the QGIS
-Plugin Manager and the Plugins menu e.g. Photo Linker</string>
+          <string>A one-liner description of the plugin that appears in the Plugin
+Manager e.g. &quot;The photo linker plugin lets you link photos to
+points.&quot;</string>
          </property>
          <property name="text">
           <string/>
          </property>
          <property name="placeholderText">
-          <string>e.g. Photo Linker</string>
+          <string>e.g. This plugin links points to photos</string>
          </property>
         </widget>
        </item>
-       <item row="5" column="2">
-        <spacer name="horizontalSpacer_2">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="4" column="0">
-        <widget class="QLabel" name="module_name_label">
+       <item row="5" column="0">
+        <widget class="QLabel" name="plugin_version_label">
          <property name="minimumSize">
           <size>
            <width>0</width>
@@ -167,67 +117,18 @@ Plugin Manager and the Plugins menu e.g. Photo Linker</string>
           </size>
          </property>
          <property name="text">
-          <string>Module name</string>
+          <string>Version number</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>
          <property name="buddy">
-          <cstring>module_name</cstring>
+          <cstring>plugin_version</cstring>
          </property>
         </widget>
        </item>
-       <item row="8" column="1" colspan="2">
-        <widget class="QLineEdit" name="author">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="toolTip">
-          <string>Your name or company name (used in the copyright header) e.g.
-Acme Corp.</string>
-         </property>
-         <property name="placeholderText">
-          <string>e.g. Acme widgets Inc.</string>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="1">
-        <widget class="QLineEdit" name="plugin_version">
-         <property name="minimumSize">
-          <size>
-           <width>60</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="toolTip">
-          <string>The version of this plugin using semantic versioning (see
-http://semver.org) e.g. 0.1.0</string>
-         </property>
-         <property name="text">
-          <string>0.1.0</string>
-         </property>
-         <property name="placeholderText">
-          <string>e.g. 0.1.0</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="0">
-        <widget class="QLabel" name="description_label">
+       <item row="7" column="0">
+        <widget class="QLabel" name="author_label">
          <property name="minimumSize">
           <size>
            <width>0</width>
@@ -241,35 +142,13 @@ http://semver.org) e.g. 0.1.0</string>
           </size>
          </property>
          <property name="text">
-          <string>Description</string>
+          <string>Author/Company</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>
          <property name="buddy">
-          <cstring>description</cstring>
-         </property>
-        </widget>
-       </item>
-       <item row="6" column="1">
-        <widget class="QLineEdit" name="qgis_minimum_version">
-         <property name="minimumSize">
-          <size>
-           <width>60</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="toolTip">
-          <string>Minimum QGIS minor version required for this plugin to work e.g. 3.0</string>
-         </property>
-         <property name="placeholderText">
-          <string>e.g. 3.0</string>
+          <cstring>author</cstring>
          </property>
         </widget>
        </item>
@@ -299,8 +178,8 @@ underscore separated e.g. photo_linker.</string>
          </property>
         </widget>
        </item>
-       <item row="8" column="0">
-        <widget class="QLabel" name="author_label">
+       <item row="3" column="0">
+        <widget class="QLabel" name="description_label">
          <property name="minimumSize">
           <size>
            <width>0</width>
@@ -314,18 +193,18 @@ underscore separated e.g. photo_linker.</string>
           </size>
          </property>
          <property name="text">
-          <string>Author/Company</string>
+          <string>Description</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>
          <property name="buddy">
-          <cstring>author</cstring>
+          <cstring>description</cstring>
          </property>
         </widget>
        </item>
-       <item row="5" column="0">
-        <widget class="QLabel" name="plugin_version_label">
+       <item row="2" column="1" colspan="2">
+        <widget class="QLineEdit" name="title">
          <property name="minimumSize">
           <size>
            <width>0</width>
@@ -338,52 +217,15 @@ underscore separated e.g. photo_linker.</string>
            <height>16777215</height>
           </size>
          </property>
-         <property name="text">
-          <string>Version number</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-         <property name="buddy">
-          <cstring>plugin_version</cstring>
-         </property>
-        </widget>
-       </item>
-       <item row="10" column="1">
-        <spacer name="verticalSpacer_2">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="9" column="0">
-        <widget class="QLabel" name="email_address_label">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>16777215</height>
-          </size>
+         <property name="toolTip">
+          <string>This is the name for your plugin that will be displayed in the QGIS
+Plugin Manager and the Plugins menu e.g. Photo Linker</string>
          </property>
          <property name="text">
-          <string>Email address</string>
+          <string/>
          </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-         <property name="buddy">
-          <cstring>email_address</cstring>
+         <property name="placeholderText">
+          <string>e.g. Photo Linker</string>
          </property>
         </widget>
        </item>
@@ -412,8 +254,58 @@ underscore separated e.g. photo_linker.</string>
          </property>
         </widget>
        </item>
-       <item row="3" column="1" colspan="2">
-        <widget class="QLineEdit" name="description">
+       <item row="1" column="0">
+        <widget class="QLabel" name="class_name_label">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16772215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Class name</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+         <property name="buddy">
+          <cstring>class_name</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="1">
+        <widget class="QLineEdit" name="qgis_minimum_version">
+         <property name="minimumSize">
+          <size>
+           <width>60</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string>Minimum QGIS minor version required for this plugin to work e.g. 3.0</string>
+         </property>
+         <property name="text">
+          <string>3.0</string>
+         </property>
+         <property name="placeholderText">
+          <string>e.g. 3.0</string>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="1" colspan="2">
+        <widget class="QLineEdit" name="email_address">
          <property name="minimumSize">
           <size>
            <width>0</width>
@@ -427,15 +319,179 @@ underscore separated e.g. photo_linker.</string>
           </size>
          </property>
          <property name="toolTip">
-          <string>A one-liner description of the plugin that appears in the Plugin
-Manager e.g. &quot;The photo linker plugin lets you link photos to
-points.&quot;</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Your email address (used in the copyright header) e.g. jack@qgis&lt;/p&gt;&lt;p&gt;.org&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="text">
           <string/>
          </property>
          <property name="placeholderText">
-          <string>e.g. This plugin links points to photos</string>
+          <string>e.g. jack@qgis.org</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="2">
+        <spacer name="horizontalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="6" column="2">
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="8" column="0">
+        <widget class="QLabel" name="email_address_label">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Email address</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+         <property name="buddy">
+          <cstring>email_address</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="1">
+        <spacer name="verticalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="5" column="1">
+        <widget class="QLineEdit" name="plugin_version">
+         <property name="minimumSize">
+          <size>
+           <width>60</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string>The version of this plugin using semantic versioning (see
+http://semver.org) e.g. 0.1.1</string>
+         </property>
+         <property name="text">
+          <string>0.1</string>
+         </property>
+         <property name="placeholderText">
+          <string>e.g. 0.1.0</string>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="1" colspan="2">
+        <widget class="QLineEdit" name="author">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string>Your name or company name (used in the copyright header) e.g.
+Acme Corp.</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="placeholderText">
+          <string>e.g. Acme widgets Inc.</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="module_name_label">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Module name</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+         <property name="buddy">
+          <cstring>module_name</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="0">
+        <widget class="QLabel" name="qgis_minimum_version_label">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Minimum QGIS version</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+         <property name="buddy">
+          <cstring>qgis_minimum_version</cstring>
          </property>
         </widget>
        </item>
@@ -465,92 +521,15 @@ It should be in CamelCase e.g. PhotoLinker.</string>
          </property>
         </widget>
        </item>
-       <item row="9" column="1" colspan="2">
-        <widget class="QLineEdit" name="email_address">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="toolTip">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Your email address (used in the copyright header) e.g. jack@qgis&lt;/p&gt;&lt;p&gt;.org&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="placeholderText">
-          <string>e.g. jack@qgis.org</string>
-         </property>
-        </widget>
-       </item>
-       <item row="6" column="2">
-        <spacer name="horizontalSpacer">
+       <item row="0" column="1">
+        <spacer name="verticalSpacer_4">
          <property name="orientation">
-          <enum>Qt::Horizontal</enum>
+          <enum>Qt::Vertical</enum>
          </property>
          <property name="sizeHint" stdset="0">
           <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="class_name_label">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16772215</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>Class name</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-         <property name="buddy">
-          <cstring>class_name</cstring>
-         </property>
-        </widget>
-       </item>
-       <item row="7" column="1">
-        <widget class="QLineEdit" name="qgis_maximum_version">
-         <property name="placeholderText">
-          <string>e.g. 4.99</string>
-         </property>
-        </widget>
-       </item>
-       <item row="7" column="0">
-        <widget class="QLabel" name="qgis_maximum_version_label">
-         <property name="text">
-          <string>Maximum QGIS version</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item row="7" column="2">
-        <spacer name="horizontalSpacer_3">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
+           <width>20</width>
+           <height>40</height>
           </size>
          </property>
         </spacer>
@@ -576,9 +555,6 @@ It should be in CamelCase e.g. PhotoLinker.</string>
       <zorder>horizontalSpacer</zorder>
       <zorder>horizontalSpacer_2</zorder>
       <zorder>verticalSpacer_4</zorder>
-      <zorder>qgis_maximum_version</zorder>
-      <zorder>qgis_maximum_version_label</zorder>
-      <zorder>horizontalSpacer_3</zorder>
      </widget>
      <widget class="QWidget" name="page">
       <layout class="QGridLayout" name="gridLayout_7">
@@ -604,7 +580,7 @@ It should be in CamelCase e.g. PhotoLinker.</string>
             <property name="plainText">
              <string>Provide a brief description of the plugin and its purpose.</string>
             </property>
-            <property name="tabStopDistance">
+            <property name="tabStopWidth">
              <number>80</number>
             </property>
            </widget>
@@ -659,7 +635,7 @@ It should be in CamelCase e.g. PhotoLinker.</string>
           <string>Help</string>
          </property>
          <property name="checked">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -689,7 +665,7 @@ It should be in CamelCase e.g. PhotoLinker.</string>
           <string>pb_tool</string>
          </property>
          <property name="checked">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -712,7 +688,7 @@ It should be in CamelCase e.g. PhotoLinker.</string>
           <string>Makefile</string>
          </property>
          <property name="checked">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -722,7 +698,7 @@ It should be in CamelCase e.g. PhotoLinker.</string>
           <string>Helper scripts</string>
          </property>
          <property name="checked">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>

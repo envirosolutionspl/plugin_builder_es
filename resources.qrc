@@ -1,5 +1,0 @@
-<RCC>
-    <qresource prefix="/plugins/plugin_builder">
-        <file>icon_enviro.svg</file>
-    </qresource>
-</RCC>

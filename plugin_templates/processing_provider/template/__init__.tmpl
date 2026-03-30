@@ -21,20 +21,11 @@
  ***************************************************************************/
  This script initializes the plugin, making it known to QGIS.
 """
-import os 
 
 __author__ = '$TemplateAuthor'
 __date__ = '$TemplateBuildDate'
 __copyright__ = '(C) $TemplateYear by $TemplateAuthor'
 
-PLUGIN_NAME = ''
-PLUGIN_VERSION = ''
-with open(os.path.join(os.path.dirname(__file__), 'metadata.txt'), 'r') as pluginMetadataFile:
-    for line in pluginMetadataFile:
-        if line.startswith("version="):
-            PLUGIN_VERSION = line.strip().split('=')[-1]
-        elif line.startswith("name="):
-            PLUGIN_NAME = line.strip().split('=')[-1]
 
 # noinspection PyPep8Naming
 def classFactory(iface):  # pylint: disable=invalid-name

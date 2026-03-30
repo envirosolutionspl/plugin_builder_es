@@ -26,20 +26,12 @@ from string import capwords
 
 from qgis.PyQt import QtGui, uic
 from qgis.PyQt.QtCore import Qt, QFileInfo
-from qgis.PyQt.QtWidgets import QMessageBox, QFrame, QDialog, QFileDialog, QPlainTextEdit
+from qgis.PyQt.QtWidgets import QMessageBox, QFrame, QDialog, QFileDialog
 from .plugin_templates import templates
-from .constants import (
-    DEFAULT_MAX_QGIS_VERSION,
-    DEFAULT_MIN_QGIS_VERSION,
-    DEFAULT_PLUGIN_VERSION,
-    DEFAULT_AUTHOR,
-    DEFAULT_EMAIL,
-    DEFAULT_TRACKER_URL,
-    DEFAULT_ISSUES_ENDPOINT
-)
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'plugin_builder_dialog_base.ui'))
+
 
 class PluginBuilderDialog(QDialog, FORM_CLASS):
     """Dialog for defining the new plugin properties.
@@ -54,11 +46,6 @@ class PluginBuilderDialog(QDialog, FORM_CLASS):
         super(PluginBuilderDialog, self).__init__(parent)
         # Set up the user interface from Designer.
         self.setupUi(self)
-
-        # Logic for dynamic path: default to one level up from the current plugin directory
-        if not stored_output_path or stored_output_path == '.':
-            stored_output_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
         self.template_subframe = None
         self.templates = templates()
         for templ in self.templates:
@@ -71,22 +58,9 @@ class PluginBuilderDialog(QDialog, FORM_CLASS):
         self.template_cbox.currentIndexChanged.connect(self.update_template)
         self.btn_select_output.clicked.connect(self.select_directory)
         self.next_button.setFocus()
-        self.stored_output_path = stored_output_path
-        self.set_defaults()
+        self.output_directory.setText(stored_output_path)
         self.last_path = stored_output_path
 
-    def set_defaults(self):
-        self.output_directory.setText(self.stored_output_path)
-        self.qgis_maximum_version.setText(DEFAULT_MAX_QGIS_VERSION)
-        self.qgis_minimum_version.setText(DEFAULT_MIN_QGIS_VERSION)
-        self.plugin_version.setText(DEFAULT_PLUGIN_VERSION)
-        self.email_address.setText(DEFAULT_EMAIL)
-        self.author.setText(DEFAULT_AUTHOR)
-    
-    def set_urls_in_publications(self):
-        self.tracker.setText(DEFAULT_TRACKER_URL + self.module_name.text().lower() + DEFAULT_ISSUES_ENDPOINT)
-        self.repository.setText(DEFAULT_TRACKER_URL + self.module_name.text().lower())
-        self.homepage.setText(DEFAULT_TRACKER_URL + self.module_name.text().lower())
 
     def update_prev_next_buttons(self):
         i = self.stackedWidget.currentIndex()
@@ -98,7 +72,6 @@ class PluginBuilderDialog(QDialog, FORM_CLASS):
             ok = True
             if i == 0:
                 ok = self.validate_entries()
-                self.set_urls_in_publications()
             if i == 1:
                 ok = self.validate_about()
             if i == 4:
@@ -147,6 +120,12 @@ class PluginBuilderDialog(QDialog, FORM_CLASS):
                 message = (
                     'Some required fields are missing. '
                     'Please complete the form.\n')
+        try:
+            # Assigning to _ is python sugar for a variable that will be unused
+            _ = float(str(self.plugin_version.text()))
+            _ = float(str(self.qgis_minimum_version.text()))
+        except ValueError:
+            message += 'Version numbers must be numeric.\n'
         # validate plugin name
         # check that we have only ascii char in class name
         if not all(ord(c) < 128 for c in self.class_name.text()):
@@ -247,7 +226,6 @@ class PluginBuilderDialog(QDialog, FORM_CLASS):
 
     def keyPressEvent(self, event):
         # prevent escape from closing the dialog
-        escape_key = Qt.Key.Key_Escape if hasattr(Qt, 'Key') else Qt.Key_Escape
-        if event.key() == escape_key:
+        if event.key() == Qt.Key_Escape:
             #QDialog.keyPressEvent(event)
             pass

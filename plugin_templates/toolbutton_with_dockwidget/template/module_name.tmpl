@@ -21,18 +21,15 @@
  *                                                                         *
  ***************************************************************************/
 """
-from .utils import MessageUtils, VersionUtils, TranslationUtils
-from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication, Qt, QTimer
-from qgis.core import Qgis, QgsSettings
-from qgis.PyQt.QtGui import QIcon, QPixmap
-from qgis.PyQt.QtWidgets import QAction, QToolBar, QDialog
+from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication, Qt
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtWidgets import QAction
 # Initialize Qt resources from file resources.py
 from .resources import *
-from . import PLUGIN_NAME, PLUGIN_VERSION
+
 # Import the code for the DockWidget
 from .${TemplateModuleName}_dockwidget import ${TemplateClass}DockWidget
 import os.path
-from .qgis_feed import QgisFeed, QgisFeedDialog
 
 
 class ${TemplateClass}:
@@ -57,30 +54,40 @@ class ${TemplateClass}:
         locale_path = os.path.join(
             self.plugin_dir,
             'i18n',
-            '${TemplateModuleName}_{}.qm'.format(locale))
+            '${TemplateClass}_{}.qm'.format(locale))
 
         if os.path.exists(locale_path):
             self.translator = QTranslator()
             self.translator.load(locale_path)
             QCoreApplication.installTranslator(self.translator)
 
-        self.settings = QgsSettings()
-
-
         # Declare instance attributes
         self.actions = []
-        self.menu = u'&EnviroSolutions'
-        self.toolbar = None
-        self.icon_path = os.path.join(str(self.plugin_dir), 'icons/icon.png')
+        self.menu = self.tr(u'&${TemplateTitle}')
+        # TODO: We are going to let the user set this up in a future iteration
+        self.toolbar = self.iface.addToolBar(u'${TemplateClass}')
+        self.toolbar.setObjectName(u'${TemplateClass}')
 
         #print "** INITIALIZING ${TemplateClass}"
 
         self.pluginIsActive = False
         self.dockwidget = None
 
-        # QGIS Feed
-        if Qgis.QGIS_VERSION_INT >= 31000:
-            QTimer.singleShot(1000, self.initFeedDelayed)
+
+    # noinspection PyMethodMayBeStatic
+    def tr(self, message):
+        """Get the translation for a string using Qt translation API.
+
+        We implement this ourselves since we do not inherit QObject.
+
+        :param message: String for translation.
+        :type message: str, QString
+
+        :returns: Translated version of message.
+        :rtype: QString
+        """
+        # noinspection PyTypeChecker,PyArgumentList,PyCallByClass
+        return QCoreApplication.translate('${TemplateClass}', message)
 
 
     def add_action(
@@ -159,19 +166,11 @@ class ${TemplateClass}:
 
     def initGui(self):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
-        MessageUtils.pushLogInfo("Initializing GUI")
-        self.toolbar = self.iface.mainWindow().findChild(QToolBar, 'EnviroSolutions')
 
-        if not self.toolbar:
-            self.toolbar = self.iface.addToolBar(u'EnviroSolutions')
-            self.toolbar.setObjectName(u'EnviroSolutions')
-        else:
-            for action in self.actions:
-                self.toolbar.removeAction(action)
-
+        icon_path = ':/plugins/${TemplateModuleName}/icon.png'
         self.add_action(
-            self.icon_path,
-            text=PLUGIN_NAME,
+            icon_path,
+            text=self.tr(u'$TemplateMenuText'),
             callback=self.run,
             parent=self.iface.mainWindow())
 
@@ -182,43 +181,32 @@ class ${TemplateClass}:
 
         #print "** CLOSING ${TemplateClass}"
 
-        self.dockwidget.hide()
+        # disconnects
+        self.dockwidget.closingPlugin.disconnect(self.onClosePlugin)
+
+        # remove this statement if dockwidget is to remain
+        # for reuse if plugin is reopened
+        # Commented next statement since it causes QGIS crashe
+        # when closing the docked window:
+        # self.dockwidget = None
+
         self.pluginIsActive = False
-        MessageUtils.pushLogInfo("Plugin closed")
 
 
     def unload(self):
-        for action in self.actions:
-            self.iface.removePluginMenu(
-                u'&EnviroSolutions',
-                action
-            )
-            self.toolbar.removeAction(action)
+        """Removes the plugin menu item and icon from QGIS GUI."""
 
-        
+        #print "** UNLOAD ${TemplateClass}"
+
+        for action in self.actions:
+            self.iface.${TemplateMenuRemoveMethod}(
+                self.tr(u'&${TemplateTitle}'),
+                action)
+            self.iface.removeToolBarIcon(action)
+        # remove the toolbar
+        del self.toolbar
 
     #--------------------------------------------------------------------------
-
-    def setUpDockwidgetGUI(self):
-        """Setup the dockwidget"""
-        self.dockwidget = ${TemplateClass}DockWidget()
-        self.dockwidget.closingPlugin.connect(self.onClosePlugin)
-        
-        if os.path.exists(self.icon_path):
-            self.dockwidget.plugin_icon.setPixmap(QPixmap(self.icon_path))
-            self.dockwidget.plugin_icon.setScaledContents(True)
-
-        path_to_logo = os.path.join(self.plugin_dir, 'icons', 'logo.svg')
-        if os.path.exists(path_to_logo):
-            self.dockwidget.enviro_logo.setPixmap(QPixmap(path_to_logo))
-            self.dockwidget.enviro_logo.setScaledContents(True)
-        MessageUtils.pushLogInfo("Dockwidget is set up")
-
-    def setDockArea(self):
-        if VersionUtils.isCompatibleQtVersion(6):
-            self.iface.addDockWidget(Qt.DockWidgetArea.${TemplateDockWidgetArea}, self.dockwidget)
-        else:
-            self.iface.addDockWidget(Qt.${TemplateDockWidgetArea}, self.dockwidget)
 
     def run(self):
         """Run method that loads and starts the plugin"""
@@ -232,43 +220,13 @@ class ${TemplateClass}:
             #    first run of plugin
             #    removed on close (see self.onClosePlugin method)
             if self.dockwidget == None:
-               self.setUpDockwidgetGUI()
-            MessageUtils.pushLogInfo("Plugin is running")
+                # Create the dockwidget (after translation) and keep reference
+                self.dockwidget = ${TemplateClass}DockWidget()
+
+            # connect to provide cleanup on closing of dockwidget
+            self.dockwidget.closingPlugin.connect(self.onClosePlugin)
+
             # show the dockwidget
             # TODO: fix to allow choice of dock location
-            self.setDockArea()
-            self.dockwidget.setWindowTitle('%s %s' % (PLUGIN_NAME, PLUGIN_VERSION))
-            self.dockwidget.lbl_pluginVersion.setText('%s %s' % (PLUGIN_NAME, PLUGIN_VERSION))
+            self.iface.addDockWidget(${TemplateDockWidgetArea}, self.dockwidget)
             self.dockwidget.show()
-            
-
-#---------------------QGIS Feed------------------------------------
-    def showBranchSelectionDialog(self):
-        self.qgisfeed_dialog = QgisFeedDialog()
-
-        if self.qgisfeed_dialog.exec() == QDialog.Accepted:
-            self.selected_branch = self.qgisfeed_dialog.comboBox.currentText()
-            
-            #Zapis w QGIS3.ini
-            self.settings.setValue("selected_industry", self.selected_branch)  
-            self.settings.setValue("showDialog", False)
-
-    def initFeedDelayed(self):
-        """Metoda wywoływana z opóźnieniem do inicjalizacji kanalu informacyjnego."""
-        try:
-            self.selected_industry = self.settings.value("selected_industry", None)
-            show_dialog = self.settings.value("showDialog", True, type=bool)
-
-            if self.selected_industry is None and show_dialog:
-                # Tylko jeśli mamy dostęp do okna głównego
-                if self.iface.mainWindow():
-                    self.showBranchSelectionDialog()
-
-            select_indust_session = self.settings.value('selected_industry')
-            if select_indust_session:
-                self.feed = QgisFeed(selected_industry=select_indust_session, plugin_name=PLUGIN_NAME)
-                self.feed.initFeed()
-        except Exception as e:
-            MessageUtils.pushLogWarning("Nie udało się zainicjować kanału informacyjnego: " + str(e))
-#------------------------------------------------------------------
-

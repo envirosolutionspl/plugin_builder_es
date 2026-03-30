@@ -41,7 +41,6 @@ class PluginSpecification:
         self.module_name = dialog.module_name.text()
         self.email_address = dialog.email_address.text()
         self.qgis_minimum_version = dialog.qgis_minimum_version.text()
-        self.qgis_maximum_version = dialog.qgis_maximum_version.text()
         self.title = dialog.title.text()
         self.plugin_version = dialog.plugin_version.text()
 
@@ -54,7 +53,7 @@ class PluginSpecification:
         self.repository = dialog.repository.text()
         self.tags = dialog.tags.text()
         # icon selection from disk will be added at a later version
-        self.icon = 'icons/icon.png'
+        self.icon = 'icon.png'
         self.experimental = dialog.experimental.isChecked()
         # deprecated is always false for a new plugin
         self.deprecated = False
@@ -78,8 +77,7 @@ class PluginSpecification:
             'TemplateDescription': self.description,
             'TemplateModuleName': self.module_name,
             'TemplateVersion': self.plugin_version,
-            'TemplateQgisMinimumVersion': self.qgis_minimum_version,
-            'TemplateQgisMaximumVersion': self.qgis_maximum_version,
+            'TemplateQgisVersion': self.qgis_minimum_version,
             'TemplateAuthor': self.author,
             'TemplateEmail': self.email_address,
             'PluginDirectoryName': self.class_name.lower(),
