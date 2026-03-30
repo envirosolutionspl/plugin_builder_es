@@ -6,10 +6,11 @@
 # This file should be included when you package your plugin.
 
 [general]
-name=Plugin Builder 3
+name=Plugin Builder 3 EnviroSolutions
 about=Create a template for a QGIS plugin
 description=Creates a QGIS plugin template for use as a starting point in plugin development
 version=3.2.1
+supportsQt6=true
 qgisMinimumVersion=2.99
 qgisMaximumVersion=3.99
 
@@ -32,7 +33,7 @@ homepage=http://g-sherman.github.io/Qgis-Plugin-Builder
 tracker=https://github.com/g-sherman/Qgis-Plugin-Builder/issues
 repository=https://github.com/g-sherman/Qgis-Plugin-Builder
 tags=development
-icon=icon.png
+icon=icon_enviro.svg
 
 experimental=False
 deprecated=False

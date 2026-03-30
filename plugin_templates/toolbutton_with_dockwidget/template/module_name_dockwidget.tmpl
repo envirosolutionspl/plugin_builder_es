@@ -44,6 +44,7 @@ class ${TemplateClass}DockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         # http://doc.qt.io/qt-5/designer-using-a-ui-file.html
         # #widgets-and-dialogs-with-auto-connect
         self.setupUi(self)
+        self.btn_close.clicked.connect(self.close)
 
     def closeEvent(self, event):
         self.closingPlugin.emit()

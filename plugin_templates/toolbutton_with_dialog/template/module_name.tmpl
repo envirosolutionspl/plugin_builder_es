@@ -21,15 +21,18 @@
  *                                                                         *
  ***************************************************************************/
 """
-from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication
-from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtWidgets import QAction
-
+from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication, QTimer
+from qgis.core import Qgis, QgsSettings
+from qgis.PyQt.QtGui import QIcon, QPixmap
+from qgis.PyQt.QtWidgets import QAction, QToolBar, QDialog
+from .utils import MessageUtils, TranslationUtils
 # Initialize Qt resources from file resources.py
 from .resources import *
 # Import the code for the dialog
 from .${TemplateModuleName}_dialog import ${TemplateClass}Dialog
 import os.path
+from . import PLUGIN_NAME, PLUGIN_VERSION
+from .qgis_feed import QgisFeed, QgisFeedDialog
 
 
 class ${TemplateClass}:
@@ -52,36 +55,44 @@ class ${TemplateClass}:
         locale_path = os.path.join(
             self.plugin_dir,
             'i18n',
-            '${TemplateClass}_{}.qm'.format(locale))
+            '${TemplateModuleName}_{}.qm'.format(locale)
+        )
 
         if os.path.exists(locale_path):
             self.translator = QTranslator()
             self.translator.load(locale_path)
             QCoreApplication.installTranslator(self.translator)
 
+        self.settings = QgsSettings()
+
         # Declare instance attributes
         self.actions = []
-        self.menu = self.tr(u'&${TemplateTitle}')
+        self.toolbar = None
+        self.dlg = None
+        self.menu = u'&EnviroSolutions'
+        self.icon_path = os.path.join(str(self.plugin_dir), 'icons/icon.png')
 
-        # Check if plugin was started the first time in current QGIS session
-        # Must be set in initGui() to survive plugin reloads
-        self.first_start = None
+        # QGIS Feed
+        if Qgis.QGIS_VERSION_INT >= 31000:
+            QTimer.singleShot(1000, self.initFeedDelayed)
 
-    # noinspection PyMethodMayBeStatic
-    def tr(self, message):
-        """Get the translation for a string using Qt translation API.
+    def initGui(self):
+        """Create the menu entries and toolbar icons inside the QGIS GUI."""
+        MessageUtils.pushLogInfo("Initializing GUI")
+        self.toolbar = self.iface.mainWindow().findChild(QToolBar, 'EnviroSolutions')
 
-        We implement this ourselves since we do not inherit QObject.
+        if not self.toolbar:
+            self.toolbar = self.iface.addToolBar(u'EnviroSolutions')
+            self.toolbar.setObjectName(u'EnviroSolutions')
+        else:
+            for action in self.actions:
+                self.toolbar.removeAction(action)
 
-        :param message: String for translation.
-        :type message: str, QString
-
-        :returns: Translated version of message.
-        :rtype: QString
-        """
-        # noinspection PyTypeChecker,PyArgumentList,PyCallByClass
-        return QCoreApplication.translate('${TemplateClass}', message)
-
+        self.add_action(
+            self.icon_path,
+            text=PLUGIN_NAME,
+            callback=self.run,
+            parent=self.iface.mainWindow())
 
     def add_action(
         self,
@@ -145,8 +156,7 @@ class ${TemplateClass}:
             action.setWhatsThis(whats_this)
 
         if add_to_toolbar:
-            # Adds plugin icon to Plugins toolbar
-            self.iface.addToolBarIcon(action)
+            self.toolbar.addAction(action)
 
         if add_to_menu:
             self.iface.${TemplateMenuAddMethod}(
@@ -157,44 +167,75 @@ class ${TemplateClass}:
 
         return action
 
-    def initGui(self):
-        """Create the menu entries and toolbar icons inside the QGIS GUI."""
+#---------------------QGIS Feed------------------------------------
+    def showBranchSelectionDialog(self):
+        self.qgisfeed_dialog = QgisFeedDialog()
 
-        icon_path = ':/plugins/${TemplateModuleName}/icon.png'
-        self.add_action(
-            icon_path,
-            text=self.tr(u'$TemplateMenuText'),
-            callback=self.run,
-            parent=self.iface.mainWindow())
+        if self.qgisfeed_dialog.exec() == QDialog.Accepted:
+            self.selected_branch = self.qgisfeed_dialog.comboBox.currentText()
+            
+            #Zapis w QGIS3.ini
+            self.settings.setValue("selected_industry", self.selected_branch)  
+            self.settings.setValue("showDialog", False)
 
-        # will be set False in run()
-        self.first_start = True
+    def initFeedDelayed(self):
+        """Metoda wywoływana z opóźnieniem do inicjalizacji kanalu informacyjnego."""
+        try:
+            self.selected_industry = self.settings.value("selected_industry", None)
+            show_dialog = self.settings.value("showDialog", True, type=bool)
+
+            if self.selected_industry is None and show_dialog:
+                # Tylko jeśli mamy dostęp do okna głównego
+                if self.iface.mainWindow():
+                    self.showBranchSelectionDialog()
+
+            select_indust_session = self.settings.value('selected_industry')
+            if select_indust_session:
+                self.feed = QgisFeed(selected_industry=select_indust_session, plugin_name=PLUGIN_NAME)
+                self.feed.initFeed()
+        except Exception as e:
+            MessageUtils.pushLogWarning("Nie udało się zainicjować kanału informacyjnego: " + str(e))
+#------------------------------------------------------------------
 
 
+    
     def unload(self):
-        """Removes the plugin menu item and icon from QGIS GUI."""
         for action in self.actions:
-            self.iface.${TemplateMenuRemoveMethod}(
-                self.tr(u'&${TemplateTitle}'),
-                action)
-            self.iface.removeToolBarIcon(action)
+            self.iface.removePluginMenu(
+                u'&EnviroSolutions',
+                action
+            )
+            self.toolbar.removeAction(action)
 
+
+    def setup_dialog(self):
+        
+        self.dlg = ${TemplateClass}Dialog()
+        path_to_logo = os.path.join(self.plugin_dir, 'icons', 'logo.svg')
+
+        if os.path.exists(self.icon_path):
+                self.dlg.plugin_icon.setPixmap(QPixmap(self.icon_path))
+                self.dlg.plugin_icon.setScaledContents(True)
+        if os.path.exists(path_to_logo):
+                self.dlg.enviro_logo.setPixmap(QPixmap(path_to_logo))
+                self.dlg.enviro_logo.setScaledContents(True)
+        MessageUtils.pushLogInfo("Dialog params are set up")
 
     def run(self):
         """Run method that performs all the real work"""
 
         # Create the dialog with elements (after translation) and keep reference
         # Only create GUI ONCE in callback, so that it will only load when the plugin is started
-        if self.first_start == True:
-            self.first_start = False
-            self.dlg = ${TemplateClass}Dialog()
+        if self.dlg is None:
+            self.setup_dialog()
 
+        self.dlg.setWindowTitle('%s %s' % (PLUGIN_NAME, PLUGIN_VERSION))
+        self.dlg.lbl_pluginVersion.setText('%s %s' % (PLUGIN_NAME, PLUGIN_VERSION))
+
+        self.dlg.setWindowIcon(QIcon(self.icon_path))
+        MessageUtils.pushLogInfo(TranslationUtils.tr("Plugin is running"))
         # show the dialog
         self.dlg.show()
         # Run the dialog event loop
-        result = self.dlg.exec_()
-        # See if OK was pressed
-        if result:
-            # Do something useful here - delete the line containing pass and
-            # substitute with your code.
-            pass
+        result = self.dlg.exec()
+        
