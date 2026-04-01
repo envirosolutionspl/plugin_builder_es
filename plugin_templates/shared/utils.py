@@ -37,7 +37,7 @@ import os
 class TranslationUtils:
     @staticmethod
     def tr(message):
-        return QCoreApplication.translate(PLUGIN_NAME, message)
+        return QCoreApplication.translate("TranslationUtils", message)
         
 class MessageUtils:
     """
@@ -54,7 +54,7 @@ class MessageUtils:
         msg_box = QMessageBox(
             QMessageBox.Icon.Critical,
             title,
-            TranslationUtils.tr(message),
+            message,
             QMessageBox.StandardButton.Ok,
             parent
         )
@@ -67,7 +67,7 @@ class MessageUtils:
         msg_box = QMessageBox(parent)
         msg_box.setIcon(QMessageBox.Icon.Information)
         msg_box.setWindowTitle(title)
-        msg_box.setText(TranslationUtils.tr(message))
+        msg_box.setText(message)
         msg_box.setStandardButtons(QMessageBox.StandardButton.Ok)
 
         if hasattr(parent, 'plugin_icon'):
@@ -80,7 +80,7 @@ class MessageUtils:
         msg_box = QMessageBox(parent)
         msg_box.setIcon(QMessageBox.Icon.Question)
         msg_box.setWindowTitle(title)
-        msg_box.setText(TranslationUtils.tr(message))
+        msg_box.setText(message)
         msg_box.setStandardButtons(
             QMessageBox.StandardButton.Yes |
             QMessageBox.StandardButton.No
@@ -93,7 +93,7 @@ class MessageUtils:
     def pushMessage(iface, message: str) -> None:
         iface.messageBar().pushMessage(
             'Informacja',
-            TranslationUtils.tr(message),
+            message,
             level=Qgis.Info,
             duration=10
         )
@@ -102,7 +102,7 @@ class MessageUtils:
     def pushSuccess(iface, message: str) -> None:
         iface.messageBar().pushMessage(
             "Sukces",
-            TranslationUtils.tr(message),
+            message,
             level=Qgis.Success,
             duration=0
         )
@@ -111,7 +111,7 @@ class MessageUtils:
     def pushWarning(iface, message: str) -> None:
         iface.messageBar().pushMessage(
             'Ostrzeżenie',
-            TranslationUtils.tr(message),
+            message,
             level=Qgis.Warning,
             duration=10
         )
@@ -119,7 +119,7 @@ class MessageUtils:
     @staticmethod
     def pushLogInfo(message: str) -> None:
         QgsMessageLog.logMessage(
-            TranslationUtils.tr(message),
+            message,
             tag=PLUGIN_NAME,
             level=Qgis.Info
         )
@@ -127,7 +127,7 @@ class MessageUtils:
     @staticmethod
     def pushLogWarning(message: str) -> None:
         QgsMessageLog.logMessage(
-            TranslationUtils.tr(message),
+            message,
             tag=PLUGIN_NAME,
             level=Qgis.Warning
         )
@@ -135,7 +135,7 @@ class MessageUtils:
     @staticmethod
     def pushLogCritical(message: str) -> None:
         QgsMessageLog.logMessage(
-            TranslationUtils.tr(message),
+            message,
             tag=PLUGIN_NAME,
             level=Qgis.Critical
         )

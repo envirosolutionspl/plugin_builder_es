@@ -24,6 +24,9 @@ pylupdate5 *.py ui/*.ui -ts i18n/moja_wtyczka_pl.ts
 lrelease i18n/<nazwa_wtyczki>_<jezyk>.ts
 ```
 
+Lub bezpośrednio w narzędziu `qt linguist`
+
+
 4. Plik `.qm` musi znajdować się w folderze `i18n/` przy dystrybucji wtyczki.
 
 ## Uwagi

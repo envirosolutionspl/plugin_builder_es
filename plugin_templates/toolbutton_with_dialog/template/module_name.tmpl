@@ -39,18 +39,19 @@ class ${TemplateClass}:
     """QGIS Plugin Implementation."""
 
     def __init__(self, iface):
-        """Constructor.
-
-        :param iface: An interface instance that will be passed to this class
-            which provides the hook by which you can manipulate the QGIS
-            application at run time.
+        """Konstruktor.
+        :param iface: Instancja interfejsu przekazywana do tej klasy,
+            która udostępnia mechanizm umożliwiający manipulowanie aplikacją QGIS
+            w czasie działania.
         :type iface: QgsInterface
         """
-        # Save reference to the QGIS interface
+
         self.iface = iface
-        # initialize plugin directory
+
+        # inicjalizacja katalogu pluginu
         self.plugin_dir = os.path.dirname(__file__)
-        # initialize locale
+
+        # inicjalizacja tłumaczeń
         locale = QSettings().value('locale/userLocale')[0:2]
         locale_path = os.path.join(
             self.plugin_dir,
@@ -65,7 +66,7 @@ class ${TemplateClass}:
 
         self.settings = QgsSettings()
 
-        # Declare instance attributes
+        # Deklaracja zmiennych
         self.actions = []
         self.toolbar = None
         self.dlg = None
@@ -77,8 +78,9 @@ class ${TemplateClass}:
             QTimer.singleShot(1000, self.initFeedDelayed)
 
     def initGui(self):
-        """Create the menu entries and toolbar icons inside the QGIS GUI."""
-        MessageUtils.pushLogInfo("Initializing GUI")
+        """Tworzy wpisy w menu i ikony paska narzędzi w interfejsie QGIS."""
+
+        MessageUtils.pushLogInfo(TranslationUtils.tr("Initializing GUI"))
         self.toolbar = self.iface.mainWindow().findChild(QToolBar, 'EnviroSolutions')
 
         if not self.toolbar:
@@ -105,42 +107,40 @@ class ${TemplateClass}:
         status_tip=None,
         whats_this=None,
         parent=None):
-        """Add a toolbar icon to the toolbar.
-
-        :param icon_path: Path to the icon for this action. Can be a resource
-            path (e.g. ':/plugins/foo/bar.png') or a normal file system path.
+        """        
+        :param icon_path: Ścieżka do ikony dla tej akcji. Może to być ścieżka zasobu
+            (np. ':/plugins/foo/bar.png') lub zwykła ścieżka systemowa.
         :type icon_path: str
 
-        :param text: Text that should be shown in menu items for this action.
+        :param text: Tekst, który powinien być wyświetlany w elementach menu dla tej akcji.
         :type text: str
 
-        :param callback: Function to be called when the action is triggered.
+        :param callback: Funkcja wywoływana po uruchomieniu akcji.
         :type callback: function
 
-        :param enabled_flag: A flag indicating if the action should be enabled
-            by default. Defaults to True.
+        :param enabled_flag: Flaga określająca, czy akcja powinna być domyślnie włączona.
+            Domyślnie True.
         :type enabled_flag: bool
 
-        :param add_to_menu: Flag indicating whether the action should also
-            be added to the menu. Defaults to True.
+        :param add_to_menu: Flaga określająca, czy akcja powinna być również dodana do menu.
+            Domyślnie True.
         :type add_to_menu: bool
 
-        :param add_to_toolbar: Flag indicating whether the action should also
-            be added to the toolbar. Defaults to True.
+        :param add_to_toolbar: Flaga określająca, czy akcja powinna być również dodana do paska narzędzi.
+            Domyślnie True.
         :type add_to_toolbar: bool
 
-        :param status_tip: Optional text to show in a popup when mouse pointer
-            hovers over the action.
+        :param status_tip: Opcjonalny tekst wyświetlany w podpowiedzi (tooltipie), gdy kursor myszy
+            znajduje się nad akcją.
         :type status_tip: str
 
-        :param parent: Parent widget for the new action. Defaults None.
+        :param parent: Widget nadrzędny dla nowej akcji. Domyślnie None.
         :type parent: QWidget
 
-        :param whats_this: Optional text to show in the status bar when the
-            mouse pointer hovers over the action.
+        :param whats_this: Opcjonalny tekst wyświetlany na pasku stanu, gdy kursor myszy
+            znajduje się nad akcją.
 
-        :returns: The action that was created. Note that the action is also
-            added to self.actions list.
+        :returns: Utworzona akcja. Zauważ, że akcja jest również dodawana do listy self.actions.
         :rtype: QAction
         """
 
@@ -194,7 +194,7 @@ class ${TemplateClass}:
                 self.feed = QgisFeed(selected_industry=select_indust_session, plugin_name=PLUGIN_NAME)
                 self.feed.initFeed()
         except Exception as e:
-            MessageUtils.pushLogWarning("Nie udało się zainicjować kanału informacyjnego: " + str(e))
+            MessageUtils.pushLogWarning(TranslationUtils.tr("Nie udało się zainicjować kanału informacyjnego: ") + str(e))
 #------------------------------------------------------------------
 
 
@@ -208,7 +208,7 @@ class ${TemplateClass}:
             self.toolbar.removeAction(action)
 
 
-    def setup_dialog(self):
+    def setUpDialog(self):
         
         self.dlg = ${TemplateClass}Dialog()
         path_to_logo = os.path.join(self.plugin_dir, 'icons', 'logo.svg')
@@ -219,23 +219,23 @@ class ${TemplateClass}:
         if os.path.exists(path_to_logo):
                 self.dlg.enviro_logo.setPixmap(QPixmap(path_to_logo))
                 self.dlg.enviro_logo.setScaledContents(True)
-        MessageUtils.pushLogInfo("Dialog params are set up")
+        MessageUtils.pushLogInfo(TranslationUtils.tr("Dialog params are set up"))
 
     def run(self):
-        """Run method that performs all the real work"""
+        """Metoda zawierająca główne funkcjonalności wtyczki"""
 
-        # Create the dialog with elements (after translation) and keep reference
-        # Only create GUI ONCE in callback, so that it will only load when the plugin is started
         if self.dlg is None:
-            self.setup_dialog()
+            self.setUpDialog()
 
         self.dlg.setWindowTitle('%s %s' % (PLUGIN_NAME, PLUGIN_VERSION))
         self.dlg.lbl_pluginVersion.setText('%s %s' % (PLUGIN_NAME, PLUGIN_VERSION))
 
         self.dlg.setWindowIcon(QIcon(self.icon_path))
         MessageUtils.pushLogInfo(TranslationUtils.tr("Plugin is running"))
-        # show the dialog
+
+        # Pokazanie okna dialogowego
         self.dlg.show()
-        # Run the dialog event loop
+
+        # Uruchomienie pętli zdarzeń okna dialogowego
         result = self.dlg.exec()
         

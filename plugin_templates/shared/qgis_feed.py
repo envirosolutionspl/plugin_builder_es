@@ -9,7 +9,7 @@ import os
 import unicodedata
 
 from .constants import INDUSTRIES, FEED_URL
-from .utils import MessageUtils
+from .utils import MessageUtils, TranslationUtils
 
 
 class QgisFeed:
@@ -42,7 +42,7 @@ class QgisFeed:
 
     def createSlug(self, text):
         """
-        This function makes slug from a random text
+        Funkcja tworzy slug z podanego tekstu
         """
         slug = self.normalizeString(text)
         slug = re.sub(r'[^a-z0-9\s-]', '', slug.lower())  # Usuń znaki niealfanumeryczne z wyjątkiem spacji i myślników
@@ -56,9 +56,9 @@ class QgisFeed:
 
     def registerFeed(self):
         """
-        Function registers QGIS Feed
+        Funkcja rejestruje QGIS Feed
         """
-        MessageUtils.pushLogInfo('Zapisuję feed')
+        MessageUtils.pushLogInfo(TranslationUtils.tr('Registering feed'))
         for key in self.s.allKeys():
             if self.envirosolutionsFeedPattern_old.match(key) or self.envirosolutionsFeedPattern_new.match(key):
                 finalKey = re.sub(r'(\d+)', r'9999\1', key.replace(self.industry_url_short, 'httpsfeedqgisorg'))
@@ -78,7 +78,7 @@ class QgisFeed:
 
     def removeDismissed(self):
         """
-        Function checks whether there was already initialized QGIS Feed
+        Funkcja sprawdzająca czy feed został już zainicjalizowany
         """
 
         for key in self.s.allKeys():
@@ -95,14 +95,14 @@ class QgisFeed:
 
     def checkIsFetchTime(self):
         """
-        Function check if the fetch time from QGIS Feed was already registered
+        Funkcja sprawdza czy czas pobrania feedu został już zarejestrowany
         """
         return self.s.contains(f"core/NewsFeed/{self.industry_url_short}/lastFetchTime") \
             or self.s.contains(f"app/news-feed/items/{self.industry_url_short}/last-fetch-time")
 
     def initFeed(self):
         """
-        Function is a built in QGIS class and it is responsible for firing QGIS Feed
+        Funkcja jest wbudowaną klasą QGIS i odpowiada za uruchomienie QGIS Feed
         """
 
         check_fetch = self.checkIsFetchTime()

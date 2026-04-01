@@ -39,20 +39,18 @@ class ${TemplateClass}:
     """QGIS Plugin Implementation."""
 
     def __init__(self, iface):
-        """Constructor.
-
-        :param iface: An interface instance that will be passed to this class
-            which provides the hook by which you can manipulate the QGIS
-            application at run time.
+        """Konstruktor.
+        :param iface: Instancja interfejsu przekazywana do tej klasy,
+            która udostępnia mechanizm umożliwiający manipulowanie aplikacją QGIS
+            w czasie działania.
         :type iface: QgsInterface
         """
-        # Save reference to the QGIS interface
         self.iface = iface
 
-        # initialize plugin directory
+        # inicjalizacja katalogu pluginu
         self.plugin_dir = os.path.dirname(__file__)
 
-        # initialize locale
+        # inicjalizacja tłumaczeń
         locale = QSettings().value('locale/userLocale')[0:2]
         locale_path = os.path.join(
             self.plugin_dir,
@@ -73,8 +71,6 @@ class ${TemplateClass}:
         self.toolbar = None
         self.icon_path = os.path.join(str(self.plugin_dir), 'icons/icon.png')
 
-        #print "** INITIALIZING ${TemplateClass}"
-
         self.pluginIsActive = False
         self.dockwidget = None
 
@@ -94,42 +90,40 @@ class ${TemplateClass}:
         status_tip=None,
         whats_this=None,
         parent=None):
-        """Add a toolbar icon to the toolbar.
-
-        :param icon_path: Path to the icon for this action. Can be a resource
-            path (e.g. ':/plugins/foo/bar.png') or a normal file system path.
+        """        
+        :param icon_path: Ścieżka do ikony dla tej akcji. Może to być ścieżka zasobu
+            (np. ':/plugins/foo/bar.png') lub zwykła ścieżka systemowa.
         :type icon_path: str
 
-        :param text: Text that should be shown in menu items for this action.
+        :param text: Tekst, który powinien być wyświetlany w elementach menu dla tej akcji.
         :type text: str
 
-        :param callback: Function to be called when the action is triggered.
+        :param callback: Funkcja wywoływana po uruchomieniu akcji.
         :type callback: function
 
-        :param enabled_flag: A flag indicating if the action should be enabled
-            by default. Defaults to True.
+        :param enabled_flag: Flaga określająca, czy akcja powinna być domyślnie włączona.
+            Domyślnie True.
         :type enabled_flag: bool
 
-        :param add_to_menu: Flag indicating whether the action should also
-            be added to the menu. Defaults to True.
+        :param add_to_menu: Flaga określająca, czy akcja powinna być również dodana do menu.
+            Domyślnie True.
         :type add_to_menu: bool
 
-        :param add_to_toolbar: Flag indicating whether the action should also
-            be added to the toolbar. Defaults to True.
+        :param add_to_toolbar: Flaga określająca, czy akcja powinna być również dodana do paska narzędzi.
+            Domyślnie True.
         :type add_to_toolbar: bool
 
-        :param status_tip: Optional text to show in a popup when mouse pointer
-            hovers over the action.
+        :param status_tip: Opcjonalny tekst wyświetlany w podpowiedzi (tooltipie), gdy kursor myszy
+            znajduje się nad akcją.
         :type status_tip: str
 
-        :param parent: Parent widget for the new action. Defaults None.
+        :param parent: Widget nadrzędny dla nowej akcji. Domyślnie None.
         :type parent: QWidget
 
-        :param whats_this: Optional text to show in the status bar when the
-            mouse pointer hovers over the action.
+        :param whats_this: Opcjonalny tekst wyświetlany na pasku stanu, gdy kursor myszy
+            znajduje się nad akcją.
 
-        :returns: The action that was created. Note that the action is also
-            added to self.actions list.
+        :returns: Utworzona akcja. Zauważ, że akcja jest również dodawana do listy self.actions.
         :rtype: QAction
         """
 
@@ -158,8 +152,9 @@ class ${TemplateClass}:
 
 
     def initGui(self):
-        """Create the menu entries and toolbar icons inside the QGIS GUI."""
-        MessageUtils.pushLogInfo("Initializing GUI")
+        """Tworzy wpisy w menu i ikony paska narzędzi w interfejsie QGIS."""
+
+        MessageUtils.pushLogInfo(TranslationUtils.tr("Initializing GUI"))
         self.toolbar = self.iface.mainWindow().findChild(QToolBar, 'EnviroSolutions')
 
         if not self.toolbar:
@@ -178,13 +173,11 @@ class ${TemplateClass}:
     #--------------------------------------------------------------------------
 
     def onClosePlugin(self):
-        """Cleanup necessary items here when plugin dockwidget is closed"""
-
-        #print "** CLOSING ${TemplateClass}"
+        """Czyszczenie niezbędnych elementów tutaj, gdy dockwidget jest zamknięty"""
 
         self.dockwidget.hide()
         self.pluginIsActive = False
-        MessageUtils.pushLogInfo("Plugin closed")
+        MessageUtils.pushLogInfo(TranslationUtils.tr("Plugin closed"))
 
 
     def unload(self):
@@ -200,7 +193,7 @@ class ${TemplateClass}:
     #--------------------------------------------------------------------------
 
     def setUpDockwidgetGUI(self):
-        """Setup the dockwidget"""
+        """Ustawia interfejs graficzny dockwidgeta"""
         self.dockwidget = ${TemplateClass}DockWidget()
         self.dockwidget.closingPlugin.connect(self.onClosePlugin)
         
@@ -212,7 +205,7 @@ class ${TemplateClass}:
         if os.path.exists(path_to_logo):
             self.dockwidget.enviro_logo.setPixmap(QPixmap(path_to_logo))
             self.dockwidget.enviro_logo.setScaledContents(True)
-        MessageUtils.pushLogInfo("Dockwidget is set up")
+        MessageUtils.pushLogInfo(TranslationUtils.tr("Dockwidget is set up"))
 
     def setDockArea(self):
         if VersionUtils.isCompatibleQtVersion(6):
@@ -221,21 +214,16 @@ class ${TemplateClass}:
             self.iface.addDockWidget(Qt.${TemplateDockWidgetArea}, self.dockwidget)
 
     def run(self):
-        """Run method that loads and starts the plugin"""
+        """Metoda zawierająca główne funkcjonalności wtyczki"""
 
         if not self.pluginIsActive:
             self.pluginIsActive = True
 
-            #print "** STARTING ${TemplateClass}"
-
-            # dockwidget may not exist if:
-            #    first run of plugin
-            #    removed on close (see self.onClosePlugin method)
             if self.dockwidget == None:
                self.setUpDockwidgetGUI()
-            MessageUtils.pushLogInfo("Plugin is running")
-            # show the dockwidget
-            # TODO: fix to allow choice of dock location
+            MessageUtils.pushLogInfo(TranslationUtils.tr("Plugin is running"))
+
+            # pokaz dockwidget
             self.setDockArea()
             self.dockwidget.setWindowTitle('%s %s' % (PLUGIN_NAME, PLUGIN_VERSION))
             self.dockwidget.lbl_pluginVersion.setText('%s %s' % (PLUGIN_NAME, PLUGIN_VERSION))
@@ -269,6 +257,6 @@ class ${TemplateClass}:
                 self.feed = QgisFeed(selected_industry=select_indust_session, plugin_name=PLUGIN_NAME)
                 self.feed.initFeed()
         except Exception as e:
-            MessageUtils.pushLogWarning("Nie udało się zainicjować kanału informacyjnego: " + str(e))
+            MessageUtils.pushLogWarning(TranslationUtils.tr("Nie udało się zainicjować kanału informacyjnego: ") + str(e))
 #------------------------------------------------------------------
 
