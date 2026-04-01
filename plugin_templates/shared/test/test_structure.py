@@ -21,8 +21,8 @@ class TestPluginStructure(unittest.TestCase):
             self.assertIn(field, config['general'], f"Brak pola '{field}' w metadata.txt")
 
     def test_icon_exists(self):
-        path = os.path.join(PLUGIN_DIR, 'icons', 'icon.png')
-        self.assertTrue(os.path.exists(path), "Brak ikony icons/icon.png")
+        path = os.path.join(PLUGIN_DIR, 'images', 'icon.png')
+        self.assertTrue(os.path.exists(path), "Brak ikony images/icon.png")
 
     def test_ui_file_exists(self):
         ui_dir = os.path.join(PLUGIN_DIR, 'ui')

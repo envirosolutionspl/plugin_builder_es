@@ -33,6 +33,7 @@ from .${TemplateModuleName}_dialog import ${TemplateClass}Dialog
 import os.path
 from . import PLUGIN_NAME, PLUGIN_VERSION
 from .qgis_feed import QgisFeed, QgisFeedDialog
+from .constants import MENU_LABEL
 
 
 class ${TemplateClass}:
@@ -70,8 +71,8 @@ class ${TemplateClass}:
         self.actions = []
         self.toolbar = None
         self.dlg = None
-        self.menu = u'&EnviroSolutions'
-        self.icon_path = os.path.join(str(self.plugin_dir), 'icons/icon.png')
+        self.menu = f'&{MENU_LABEL}'
+        self.icon_path = os.path.join(str(self.plugin_dir), 'images/icon.png')
 
         # QGIS Feed
         if Qgis.QGIS_VERSION_INT >= 31000:
@@ -81,11 +82,11 @@ class ${TemplateClass}:
         """Tworzy wpisy w menu i ikony paska narzędzi w interfejsie QGIS."""
 
         MessageUtils.pushLogInfo(TranslationUtils.tr("Initializing GUI"))
-        self.toolbar = self.iface.mainWindow().findChild(QToolBar, 'EnviroSolutions')
+        self.toolbar = self.iface.mainWindow().findChild(QToolBar, MENU_LABEL)
 
         if not self.toolbar:
-            self.toolbar = self.iface.addToolBar(u'EnviroSolutions')
-            self.toolbar.setObjectName(u'EnviroSolutions')
+            self.toolbar = self.iface.addToolBar(MENU_LABEL)
+            self.toolbar.setObjectName(MENU_LABEL)
         else:
             for action in self.actions:
                 self.toolbar.removeAction(action)
@@ -202,7 +203,7 @@ class ${TemplateClass}:
     def unload(self):
         for action in self.actions:
             self.iface.removePluginMenu(
-                u'&EnviroSolutions',
+                f'&{MENU_LABEL}',
                 action
             )
             self.toolbar.removeAction(action)
@@ -211,7 +212,7 @@ class ${TemplateClass}:
     def setUpDialog(self):
         
         self.dlg = ${TemplateClass}Dialog()
-        path_to_logo = os.path.join(self.plugin_dir, 'icons', 'logo.svg')
+        path_to_logo = os.path.join(self.plugin_dir, 'images', 'logo.svg')
 
         if os.path.exists(self.icon_path):
                 self.dlg.plugin_icon.setPixmap(QPixmap(self.icon_path))

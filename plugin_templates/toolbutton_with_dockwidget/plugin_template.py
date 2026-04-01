@@ -78,6 +78,6 @@ class ToolbuttonWithDockWidgetPluginTemplate(PluginTemplate):
 
     def copy_files(self, specification):
         return {
-            'icon.png': 'icons/icon.png',
-            'logo.svg': 'icons/logo.svg'
+            'icon.png': 'images/icon.png',
+            'logo.svg': 'images/logo.svg'
         }

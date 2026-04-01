@@ -1,5 +1,6 @@
 DEFAULT_ENCODING = 'utf-8'
 
+MENU_LABEL = "EnviroSolutions"
 
 # ================ Utils ================ 
 

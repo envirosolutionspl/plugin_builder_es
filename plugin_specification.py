@@ -54,7 +54,7 @@ class PluginSpecification:
         self.repository = dialog.repository.text()
         self.tags = dialog.tags.text()
         # icon selection from disk will be added at a later version
-        self.icon = 'icons/icon.png'
+        self.icon = 'images/icon.png'
         self.experimental = dialog.experimental.isChecked()
         # deprecated is always false for a new plugin
         self.deprecated = False

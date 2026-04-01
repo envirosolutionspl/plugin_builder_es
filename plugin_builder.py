@@ -78,7 +78,7 @@ class PluginBuilder:
         self.toolbar = None
         self.dialog = None
         self.menu = u'&EnviroSolutions'
-        self.icon_path = os.path.join(str(self.plugin_builder_path), 'icon_enviro.svg')
+        self.icon_path = os.path.join(str(self.plugin_builder_path), 'icon_pb.svg')
         self.plugin_path = None
         self.template = None
         self.shared_dir = None
@@ -578,48 +578,7 @@ class PluginBuilder:
         self._prepare_metadata(specification)
         
 
-        ''' instead of compiling the resource file, we will just copy resources.py it is implemented in _prepare_enviro_files'''
-        # # Attempt to compile the resource file
-        # if VersionUtils.isCompatibleQtVersion(6):
-        #     tools_to_try = ['pyrcc6', 'pyside6-rcc', 'pyrcc5']
-        # else:
-        #     tools_to_try = ['pyrcc5', 'pyrcc6', 'pyside6-rcc']
-
-        # compiled_successfully = False
-        
-        # for rcc_tool in tools_to_try:
-        #     try:
-        #         cmd = [
-        #             rcc_tool, '-o',
-        #             os.path.join(self.plugin_path, 'resources.py'),
-        #             os.path.join(self.plugin_path, 'resources.qrc')
-        #         ]
-        #         subprocess.check_call(cmd, shell=(os.name == 'nt'))
-        #         compiled_successfully = True
-        #         break
-                
-        #     except (FileNotFoundError, subprocess.CalledProcessError):
-        #         continue
-
-        # if not compiled_successfully:
-        #     QMessageBox.warning(
-        #         None, 'Unable to Compile resources.qrc',
-        #         f"None of the resource compilers ({', '.join(tools_to_try)}) were found or worked. "
-        #         f"You'll have to manually compile the resources.qrc file "
-        #         f"before installing your plugin.")
-                
-
-        # # Replace hardcoded PyQt5/PyQt6 imports with qgis.PyQt
-        # res_path = os.path.join(self.plugin_path, 'resources.py')
-        # if os.path.exists(res_path):
-        #     with open(res_path, 'r', encoding='utf8') as f:
-        #         content = f.read()
-                
-        #         content = content.replace('from PyQt5 import QtCore', 'from qgis.PyQt import QtCore')
-        #         content = content.replace('from PyQt6 import QtCore', 'from qgis.PyQt import QtCore')
-                
-        #         with open(res_path, 'w', encoding='utf8') as f:
-        #             f.write(content)
+        ''' instead of compiling the resource file, we will just copy resources.py - it is implemented in _prepare_enviro_files'''
 
         # show the results
         results_dialog = ResultDialog()

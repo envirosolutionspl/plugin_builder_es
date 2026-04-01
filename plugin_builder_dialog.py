@@ -72,21 +72,22 @@ class PluginBuilderDialog(QDialog, FORM_CLASS):
         self.btn_select_output.clicked.connect(self.select_directory)
         self.next_button.setFocus()
         self.stored_output_path = stored_output_path
-        self.set_defaults()
+        # Set default values for the fields in GUI
+        self.set_defaults_filling(stored_output_path, DEFAULT_MAX_QGIS_VERSION, DEFAULT_MIN_QGIS_VERSION, DEFAULT_PLUGIN_VERSION, DEFAULT_EMAIL, DEFAULT_AUTHOR)
         self.last_path = stored_output_path
 
-    def set_defaults(self):
-        self.output_directory.setText(self.stored_output_path)
-        self.qgis_maximum_version.setText(DEFAULT_MAX_QGIS_VERSION)
-        self.qgis_minimum_version.setText(DEFAULT_MIN_QGIS_VERSION)
-        self.plugin_version.setText(DEFAULT_PLUGIN_VERSION)
-        self.email_address.setText(DEFAULT_EMAIL)
-        self.author.setText(DEFAULT_AUTHOR)
+    def set_defaults_filling(self, stored_output_path, qgis_maximum_version, qgis_minimum_version, plugin_version, email_address, author):
+        self.output_directory.setText(stored_output_path)
+        self.qgis_maximum_version.setText(qgis_maximum_version)
+        self.qgis_minimum_version.setText(qgis_minimum_version)
+        self.plugin_version.setText(plugin_version)
+        self.email_address.setText(email_address)
+        self.author.setText(author)
     
-    def set_urls_in_publications(self):
-        self.tracker.setText(DEFAULT_TRACKER_URL + self.module_name.text().lower() + DEFAULT_ISSUES_ENDPOINT)
-        self.repository.setText(DEFAULT_TRACKER_URL + self.module_name.text().lower())
-        self.homepage.setText(DEFAULT_TRACKER_URL + self.module_name.text().lower())
+    def set_urls_in_publications(self, tracker_url, issue_endpoint, module_name):
+        self.tracker.setText(tracker_url + module_name.lower() + issue_endpoint)
+        self.repository.setText(tracker_url + module_name.lower())
+        self.homepage.setText(tracker_url + module_name.lower())
 
     def update_prev_next_buttons(self):
         i = self.stackedWidget.currentIndex()
@@ -98,7 +99,8 @@ class PluginBuilderDialog(QDialog, FORM_CLASS):
             ok = True
             if i == 0:
                 ok = self.validate_entries()
-                self.set_urls_in_publications()
+                # Fill out the URLs in publications in GUI
+                self.set_urls_in_publications(DEFAULT_TRACKER_URL, DEFAULT_ISSUES_ENDPOINT, self.module_name.text())
             if i == 1:
                 ok = self.validate_about()
             if i == 4:

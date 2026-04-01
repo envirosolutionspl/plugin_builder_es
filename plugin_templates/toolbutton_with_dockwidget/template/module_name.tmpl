@@ -33,7 +33,7 @@ from . import PLUGIN_NAME, PLUGIN_VERSION
 from .${TemplateModuleName}_dockwidget import ${TemplateClass}DockWidget
 import os.path
 from .qgis_feed import QgisFeed, QgisFeedDialog
-
+from .constants import MENU_LABEL
 
 class ${TemplateClass}:
     """QGIS Plugin Implementation."""
@@ -67,9 +67,9 @@ class ${TemplateClass}:
 
         # Declare instance attributes
         self.actions = []
-        self.menu = u'&EnviroSolutions'
+        self.menu = f'&{MENU_LABEL}'
         self.toolbar = None
-        self.icon_path = os.path.join(str(self.plugin_dir), 'icons/icon.png')
+        self.icon_path = os.path.join(str(self.plugin_dir), 'images/icon.png')
 
         self.pluginIsActive = False
         self.dockwidget = None
@@ -155,11 +155,11 @@ class ${TemplateClass}:
         """Tworzy wpisy w menu i ikony paska narzędzi w interfejsie QGIS."""
 
         MessageUtils.pushLogInfo(TranslationUtils.tr("Initializing GUI"))
-        self.toolbar = self.iface.mainWindow().findChild(QToolBar, 'EnviroSolutions')
+        self.toolbar = self.iface.mainWindow().findChild(QToolBar, MENU_LABEL)
 
         if not self.toolbar:
-            self.toolbar = self.iface.addToolBar(u'EnviroSolutions')
-            self.toolbar.setObjectName(u'EnviroSolutions')
+            self.toolbar = self.iface.addToolBar(MENU_LABEL)
+            self.toolbar.setObjectName(MENU_LABEL)
         else:
             for action in self.actions:
                 self.toolbar.removeAction(action)
@@ -183,7 +183,7 @@ class ${TemplateClass}:
     def unload(self):
         for action in self.actions:
             self.iface.removePluginMenu(
-                u'&EnviroSolutions',
+                f'&{MENU_LABEL}',
                 action
             )
             self.toolbar.removeAction(action)
@@ -201,7 +201,7 @@ class ${TemplateClass}:
             self.dockwidget.plugin_icon.setPixmap(QPixmap(self.icon_path))
             self.dockwidget.plugin_icon.setScaledContents(True)
 
-        path_to_logo = os.path.join(self.plugin_dir, 'icons', 'logo.svg')
+        path_to_logo = os.path.join(self.plugin_dir, 'images', 'logo.svg')
         if os.path.exists(path_to_logo):
             self.dockwidget.enviro_logo.setPixmap(QPixmap(path_to_logo))
             self.dockwidget.enviro_logo.setScaledContents(True)

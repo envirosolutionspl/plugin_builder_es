@@ -26,7 +26,7 @@ ENVIRO_FILES={
 
 ENVIRO_FOLDERS=[
     'modules',
-    'icons',
+    'images',
     'ui'
 ]
 
