@@ -63,7 +63,7 @@ class ToolbuttonWithDockWidgetPluginTemplate(PluginTemplate):
             'TemplateMenuAddMethod': add_method,
             'TemplateMenuRemoveMethod': remove_method,
             # DockWidget
-            'TemplateDockWidgetArea': 'Qt.{}DockWidgetArea'.format(dockwidget_area)
+            'TemplateDockWidgetArea': '{}DockWidgetArea'.format(dockwidget_area)
         }
 
     def template_files(self, specification):
@@ -74,15 +74,10 @@ class ToolbuttonWithDockWidgetPluginTemplate(PluginTemplate):
             '%s_dockwidget_base.ui' % specification.module_name,
             'resources.tmpl': 'resources.qrc',
         }
-        if specification.gen_tests:
-            result.update({
-                'test/test_module_name_dockwidget.templ':
-                'test/test_%s_dockwidget.py' % specification.module_name,
-                'test/test_resources.templ': 'test/test_resources.py'
-            })
         return result
 
     def copy_files(self, specification):
         return {
-            'icon.png': 'icon.png'
+            'icon.png': 'images/icon.png',
+            'logo.svg': 'images/logo.svg'
         }

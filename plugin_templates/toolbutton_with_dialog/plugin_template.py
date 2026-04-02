@@ -68,15 +68,10 @@ class ToolbuttonWithDialogPluginTemplate(PluginTemplate):
             '%s_dialog_base.ui' % specification.module_name,
             'resources.tmpl': 'resources.qrc',
         }
-        if specification.gen_tests:
-            result.update({
-                'test/test_module_name_dialog.templ':
-                'test/test_%s_dialog.py' % specification.module_name,
-                'test/test_resources.templ': 'test/test_resources.py'
-            })
         return result
 
     def copy_files(self, specification):
         return {
-            'icon.png': 'icon.png'
+            'icon.png': 'images/icon.png',
+            'logo.svg': 'images/logo.svg'
         }
