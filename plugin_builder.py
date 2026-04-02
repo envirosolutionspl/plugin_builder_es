@@ -78,7 +78,7 @@ class PluginBuilder:
         self.toolbar = None
         self.dialog = None
         self.menu = u'&EnviroSolutions'
-        self.icon_path = os.path.join(str(self.plugin_builder_path), 'icon_pb.svg')
+        self.icon_path = os.path.join(str(self.plugin_builder_path), 'images/icon_pb.svg')
         self.plugin_path = None
         self.template = None
         self.shared_dir = None
