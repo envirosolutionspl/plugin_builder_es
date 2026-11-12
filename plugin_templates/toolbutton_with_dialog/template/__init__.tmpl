@@ -27,7 +27,8 @@ import os
 
 PLUGIN_NAME = ''
 PLUGIN_VERSION = ''
-with open(os.path.join(os.path.dirname(__file__), 'metadata.txt'), 'r') as pluginMetadataFile:
+QSS_IMAGES_PREFIX = '${TemplateQssPrefix}'
+with open(os.path.join(os.path.dirname(__file__), 'metadata.txt'), 'r', encoding='utf-8') as pluginMetadataFile:
     for line in pluginMetadataFile:
         if line.startswith("version="):
             PLUGIN_VERSION = line.strip().split('=')[-1]

@@ -19,9 +19,15 @@ ENVIRO_FILES={
     'utils.py': 'default',
     'constants.py': 'default',
     'qgis_feed.py': 'default',
-    'qgis_feed.ui': 'ui',
     'resources.py': 'default',
-    '__init__.py': 'modules'
+    '__init__.py': 'modules',
+    'images/help.svg': 'default',
+    'images/help_dark.svg': 'default',
+    'images/close.svg': 'default',
+    'images/close_dark.svg': 'default',
+    'images/chevron_down.svg': 'default',
+    'images/es_logo_h.png': 'default',
+    'images/es_logo_white.png': 'default',
 }
 
 ENVIRO_FOLDERS=[

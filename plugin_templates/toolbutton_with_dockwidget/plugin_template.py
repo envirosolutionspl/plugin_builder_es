@@ -29,7 +29,7 @@ from ...qgis_dirs import deployment_dir
 class ToolbuttonWithDockWidgetPluginTemplate(PluginTemplate):
 
     def descr(self):
-        return "Tool button with dock widget"
+        return "Tool button with dock widget (zalecany)"
 
     def subdir(self):
         return os.path.dirname(__file__)
@@ -51,7 +51,7 @@ class ToolbuttonWithDockWidgetPluginTemplate(PluginTemplate):
         return {
             # Makefile
             'TemplatePyFiles': '%s_dockwidget.py' % specification.module_name,
-            'TemplateUiFiles': '%s_dockwidget_base.ui' % specification.module_name,
+            'TemplateUiFiles': 'ui/%s_dockwidget_base.ui' % specification.module_name,
             'TemplateExtraFiles': 'icon.png',
             'TemplateQrcFiles': 'resources.qrc',
             'TemplateRcFiles': "resources.py",
@@ -71,7 +71,7 @@ class ToolbuttonWithDockWidgetPluginTemplate(PluginTemplate):
             'module_name_dockwidget.tmpl':
             '%s_dockwidget.py' % specification.module_name,
             'module_name_dockwidget_base.ui.tmpl':
-            '%s_dockwidget_base.ui' % specification.module_name,
+            os.path.join('ui', '%s_dockwidget_base.ui' % specification.module_name),
             'resources.tmpl': 'resources.qrc',
         }
         return result
@@ -79,5 +79,4 @@ class ToolbuttonWithDockWidgetPluginTemplate(PluginTemplate):
     def copy_files(self, specification):
         return {
             'icon.png': 'images/icon.png',
-            'logo.svg': 'images/logo.svg'
         }

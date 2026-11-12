@@ -1,6 +1,6 @@
 from qgis.core import (QgsNewsFeedParser, QgsSettings, QgsNewsFeedModel,
                        QgsMessageLog, QgsApplication)
-from qgis.PyQt.QtCore import QUrl
+from qgis.PyQt.QtCore import QUrl, QDir, QEvent
 from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import QDialog, QComboBox, QPushButton
 
@@ -8,8 +8,13 @@ import re
 import os
 import unicodedata
 
-from .constants import INDUSTRIES, FEED_URL
-from .utils import MessageUtils, TranslationUtils
+from . import QSS_IMAGES_PREFIX
+from .constants import INDUSTRIES, FEED_URL, FOOTER_LOGOS
+from .utils import MessageUtils, TranslationUtils, ThemeUtils
+
+PLUGIN_DIR = os.path.dirname(__file__)
+
+QDir.addSearchPath(QSS_IMAGES_PREFIX, os.path.join(PLUGIN_DIR, 'images'))
 
 
 class QgisFeed:
@@ -113,14 +118,44 @@ class QgisFeed:
 class QgisFeedDialog(QDialog):
     def __init__(self, parent=None):
         super(QgisFeedDialog, self).__init__(parent)
-        self.ui_file_path = os.path.join(os.path.dirname(__file__), 'ui', 'qgis_feed.ui')
+        self.ui_file_path = os.path.join(PLUGIN_DIR, 'ui', 'qgis_feed.ui')
         uic.loadUi(self.ui_file_path, self)
+        self._theme = None
 
         self.comboBox = self.findChild(QComboBox, 'comboBox')
         self.pushButton = self.findChild(QPushButton, 'pushButton')
+        self.comboBox.clear()
+        for code, name in INDUSTRIES.items():
+            self.comboBox.addItem(name, code)
         self.pushButton.clicked.connect(self.onSaveClicked)
 
+        self._applyTheme()
         self.loadPreviousSelection()
+
+    def _applyTheme(self, force=False):
+        theme = 'dark' if ThemeUtils.isDarkTheme() else 'light'
+        if theme == self._theme and not force:
+            return
+        self._theme = theme
+        self.setProperty('theme', theme)
+        ThemeUtils.repolishAll(self)
+        self._setLogo()
+
+    def _setLogo(self, height=30):
+        if self._theme is not None:
+            ThemeUtils.setLogo(self.lbl_logo, FOOTER_LOGOS[self._theme], height)
+
+    def showEvent(self, event):
+        self._applyTheme()
+        super().showEvent(event)
+        # Skala ekranu jest znana dopiero po pokazaniu - wcześniej logo byłoby rozpikselowane.
+        self._setLogo()
+
+    def changeEvent(self, event):
+        if (event.type() in (QEvent.Type.PaletteChange, QEvent.Type.StyleChange)
+                and getattr(self, '_theme', None) is not None):
+            self._applyTheme()
+        super().changeEvent(event)
 
     def loadPreviousSelection(self):
         settings = QgsSettings()

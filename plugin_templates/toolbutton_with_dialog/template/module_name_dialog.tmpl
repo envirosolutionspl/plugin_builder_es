@@ -23,23 +23,185 @@
 """
 
 import os
+from functools import reduce
+from operator import or_
 
-from qgis.PyQt import uic
-from qgis.PyQt import QtWidgets
-from .utils import MessageUtils, TranslationUtils
+from qgis.PyQt import QtWidgets, uic
+from qgis.PyQt.QtCore import Qt, QDir, QEvent, QRect, QUrl
+from qgis.PyQt.QtGui import QCursor, QDesktopServices
 
-FORM_CLASS, _ = uic.loadUiType(os.path.join(
-    os.path.dirname(__file__), '${TemplateModuleName}_dialog_base.ui'))
+from . import PLUGIN_VERSION, QSS_IMAGES_PREFIX
+from .constants import FOOTER_LINK_COLORS, FOOTER_LOGOS, FOOTER_LOGO_HEIGHT, HOME_LINK
+from .utils import MessageUtils, TranslationUtils, ThemeUtils
+
+PLUGIN_DIR = os.path.dirname(__file__)
+
+WINDOW_BORDER = 1
+RESIZE_ZONE = 5
+RESIZE_CORNER = 10
+
+# Musi być zarejestrowany przed setupUi, inaczej QSS nie znajdzie ikon.
+QDir.addSearchPath(QSS_IMAGES_PREFIX, os.path.join(PLUGIN_DIR, 'images'))
+
+FORM_CLASS, _ = uic.loadUiType(os.path.join(PLUGIN_DIR, 'ui', '${TemplateModuleName}_dialog_base.ui'))
+
+
+def cursorForEdges(edges):
+    if len(edges) == 1:
+        if edges[0] in (Qt.Edge.LeftEdge, Qt.Edge.RightEdge):
+            return Qt.CursorShape.SizeHorCursor
+        return Qt.CursorShape.SizeVerCursor
+    main_diagonal = ((Qt.Edge.LeftEdge in edges and Qt.Edge.TopEdge in edges)
+                     or (Qt.Edge.RightEdge in edges and Qt.Edge.BottomEdge in edges))
+    return Qt.CursorShape.SizeFDiagCursor if main_diagonal else Qt.CursorShape.SizeBDiagCursor
+
+
+def resizedGeometry(geom, delta, edges, min_w, min_h):
+    geom = QRect(geom)
+    if Qt.Edge.LeftEdge in edges:
+        geom.setLeft(min(geom.left() + delta.x(), geom.right() - min_w + 1))
+    if Qt.Edge.RightEdge in edges:
+        geom.setRight(max(geom.right() + delta.x(), geom.left() + min_w - 1))
+    if Qt.Edge.TopEdge in edges:
+        geom.setTop(min(geom.top() + delta.y(), geom.bottom() - min_h + 1))
+    if Qt.Edge.BottomEdge in edges:
+        geom.setBottom(max(geom.bottom() + delta.y(), geom.top() + min_h - 1))
+    return geom
+
+
+class ResizeHandle(QtWidgets.QWidget):
+    """Niewidoczny uchwyt do zmiany rozmiaru okna, leżący nad treścią przy krawędzi lub w rogu."""
+
+    def __init__(self, window, edges):
+        super().__init__(window)
+        self.window_ = window
+        self.edges = edges
+        self._start = None
+        self.setCursor(cursorForEdges(edges))
+
+    def mousePressEvent(self, event):
+        if event.button() != Qt.MouseButton.LeftButton:
+            super().mousePressEvent(event)
+            return
+        # Ręczna zmiana rozmiaru tylko gdy system jej nie obsługuje.
+        if not self.window_.windowHandle().startSystemResize(reduce(or_, self.edges)):
+            self._start = (QCursor.pos(), QRect(self.window_.geometry()))
+        event.accept()
+
+    def mouseMoveEvent(self, event):
+        if self._start is None:
+            super().mouseMoveEvent(event)
+            return
+        start_pos, start_geom = self._start
+        hint = self.window_.minimumSizeHint()
+        min_w = max(self.window_.minimumWidth(), hint.width())
+        min_h = max(self.window_.minimumHeight(), hint.height())
+        self.window_.setGeometry(resizedGeometry(start_geom, QCursor.pos() - start_pos, self.edges, min_w, min_h))
+
+    def mouseReleaseEvent(self, event):
+        self._start = None
+        super().mouseReleaseEvent(event)
 
 
 class ${TemplateClass}Dialog(QtWidgets.QDialog, FORM_CLASS):
+    """Okno wtyczki wyglądające jak wyjęty panel dokowany, bez możliwości zadokowania.
+
+    Preferowaną wersją jest szablon z panelem dokowanym - ten służy do szczególnych przypadków.
+    """
+
     def __init__(self, parent=None):
-        """Konstruktor."""
         super(${TemplateClass}Dialog, self).__init__(parent)
         self.setupUi(self)
+        self._theme = None
+        self._setupWindowFrame()
+        self._applyTheme()
+        self._setupLook()
+        self._setupSignals()
 
-        self.btn_close.clicked.connect(self.reject)
+    def _setupWindowFrame(self):
+        self.setWindowFlags(Qt.WindowType.Dialog | Qt.WindowType.FramelessWindowHint)
+        # Obwódka okna to tło QDialog widoczne w marginesie.
+        self.verticalLayout_root.setContentsMargins(WINDOW_BORDER, WINDOW_BORDER, WINDOW_BORDER, WINDOW_BORDER)
+        self.header_frame.installEventFilter(self)
+        self._dragOffset = None
+        E = Qt.Edge
+        self.resize_handles = [ResizeHandle(self, edges) for edges in (
+            [E.LeftEdge], [E.RightEdge], [E.TopEdge], [E.BottomEdge],
+            [E.LeftEdge, E.TopEdge], [E.RightEdge, E.TopEdge],
+            [E.LeftEdge, E.BottomEdge], [E.RightEdge, E.BottomEdge])]
 
-    def reject(self):
-        MessageUtils.pushLogInfo(TranslationUtils.tr("Plugin closed"))
-        super().reject()
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        self._placeResizeHandles()
+
+    def _placeResizeHandles(self):
+        w, h, z, c = self.width(), self.height(), RESIZE_ZONE, RESIZE_CORNER
+        E = Qt.Edge
+        for handle in self.resize_handles:
+            e = handle.edges
+            if len(e) == 2:
+                x = 0 if E.LeftEdge in e else w - c
+                y = 0 if E.TopEdge in e else h - c
+                handle.setGeometry(x, y, c, c)
+            elif e[0] in (E.LeftEdge, E.RightEdge):
+                handle.setGeometry(0 if e[0] == E.LeftEdge else w - z, c, z, h - 2 * c)
+            else:
+                handle.setGeometry(c, 0 if e[0] == E.TopEdge else h - z, w - 2 * c, z)
+            handle.raise_()
+
+    def eventFilter(self, obj, event):
+        """Przesuwanie okna za nagłówek."""
+        if obj is self.header_frame:
+            if event.type() == QEvent.Type.MouseButtonPress and event.button() == Qt.MouseButton.LeftButton:
+                if not self.windowHandle().startSystemMove():
+                    self._dragOffset = QCursor.pos() - self.frameGeometry().topLeft()
+                return True
+            if event.type() == QEvent.Type.MouseMove and self._dragOffset is not None:
+                self.move(QCursor.pos() - self._dragOffset)
+                return True
+            if event.type() == QEvent.Type.MouseButtonRelease:
+                self._dragOffset = None
+        return super().eventFilter(obj, event)
+
+    def _setupLook(self):
+        self.lbl_pluginVersion.setText('v%s' % PLUGIN_VERSION)
+        self.btn_help.clicked.connect(self._openHelp)
+        self.btn_close.clicked.connect(self.close)
+
+    def _applyTheme(self, force=False):
+        theme = 'dark' if ThemeUtils.isDarkTheme() else 'light'
+        if theme == self._theme and not force:
+            return
+        self._theme = theme
+        self.setProperty('theme', theme)
+        ThemeUtils.repolishAll(self)
+        ThemeUtils.setLinkColor((self.lbl_email, self.lbl_szkolenia), FOOTER_LINK_COLORS[theme])
+        self._setFooterLogo()
+
+    def _setFooterLogo(self):
+        if self._theme is not None:
+            ThemeUtils.setLogo(self.lbl_es_logo, FOOTER_LOGOS[self._theme], FOOTER_LOGO_HEIGHT)
+
+    def showEvent(self, event):
+        self._applyTheme()
+        super().showEvent(event)
+        # Skala ekranu jest znana dopiero po pokazaniu - wcześniej logo byłoby rozpikselowane.
+        self._setFooterLogo()
+
+    def changeEvent(self, event):
+        # changeEvent przychodzi już w trakcie setupUi, zanim istnieje _theme.
+        if (event.type() in (QEvent.Type.PaletteChange, QEvent.Type.StyleChange)
+                and getattr(self, '_theme', None) is not None):
+            self._applyTheme()
+        super().changeEvent(event)
+
+    def _openHelp(self):
+        QDesktopServices.openUrl(QUrl(ThemeUtils.readHomepage() or HOME_LINK))
+
+    def _setupSignals(self):
+        self.btn_clear.clicked.connect(self.clearForm)
+
+    def clearForm(self):
+        self.cmb_example.setCurrentIndex(-1)
+        self.le_example.clear()
+        MessageUtils.pushLogInfo(TranslationUtils.tr("Form cleared"))
