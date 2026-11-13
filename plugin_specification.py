@@ -21,6 +21,8 @@
  ***************************************************************************/
 """
 import datetime
+import re
+from xml.sax.saxutils import escape
 
 
 class PluginSpecification:
@@ -86,6 +88,10 @@ class PluginSpecification:
             'TemplateBuildDate': self.build_date,
             'TemplateYear': self.build_year,
             'TemplateVCSFormat': self.vcs_format,
+            'TemplateTitleXml': escape(self.title),
+            'TemplateDescriptionXml': escape(self.description),
+            # QDir.addSearchPath jest globalny dla całego QGIS - prefiks musi być unikalny dla wtyczki.
+            'TemplateQssPrefix': re.sub(r'[^a-z0-9]', '', self.module_name.lower()) + 'img',
             # Makefile defaults
             'TemplatePyFiles': '',
             'TemplateUiFiles': '',

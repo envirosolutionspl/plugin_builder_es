@@ -23,7 +23,7 @@
 """
 from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication, QTimer
 from qgis.core import Qgis, QgsSettings
-from qgis.PyQt.QtGui import QIcon, QPixmap
+from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction, QToolBar, QDialog
 from .utils import MessageUtils, TranslationUtils
 # Initialize Qt resources from file resources.py
@@ -53,7 +53,7 @@ class ${TemplateClass}:
         self.plugin_dir = os.path.dirname(__file__)
 
         # inicjalizacja tłumaczeń
-        locale = QSettings().value('locale/userLocale')[0:2]
+        locale = (QSettings().value('locale/userLocale') or 'pl')[0:2]
         locale_path = os.path.join(
             self.plugin_dir,
             'i18n',
@@ -172,7 +172,7 @@ class ${TemplateClass}:
     def showBranchSelectionDialog(self):
         self.qgisfeed_dialog = QgisFeedDialog()
 
-        if self.qgisfeed_dialog.exec() == QDialog.Accepted:
+        if self.qgisfeed_dialog.exec() == QDialog.DialogCode.Accepted:
             self.selected_branch = self.qgisfeed_dialog.comboBox.currentText()
             
             #Zapis w QGIS3.ini
@@ -198,8 +198,6 @@ class ${TemplateClass}:
             MessageUtils.pushLogWarning(TranslationUtils.tr("Nie udało się zainicjować kanału informacyjnego: ") + str(e))
 #------------------------------------------------------------------
 
-
-    
     def unload(self):
         for action in self.actions:
             self.iface.removePluginMenu(
@@ -208,18 +206,18 @@ class ${TemplateClass}:
             )
             self.toolbar.removeAction(action)
 
+        if self.dlg is not None:
+            self.dlg.close()
+            self.dlg.deleteLater()
+            self.dlg = None
+
+    #--------------------------------------------------------------------------
 
     def setUpDialog(self):
-        
-        self.dlg = ${TemplateClass}Dialog()
-        path_to_logo = os.path.join(self.plugin_dir, 'images', 'logo.svg')
-
-        if os.path.exists(self.icon_path):
-                self.dlg.plugin_icon.setPixmap(QPixmap(self.icon_path))
-                self.dlg.plugin_icon.setScaledContents(True)
-        if os.path.exists(path_to_logo):
-                self.dlg.enviro_logo.setPixmap(QPixmap(path_to_logo))
-                self.dlg.enviro_logo.setScaledContents(True)
+        self.dlg = ${TemplateClass}Dialog(self.iface.mainWindow())
+        self.dlg.setWindowTitle('%s %s' % (PLUGIN_NAME, PLUGIN_VERSION))
+        self.dlg.setWindowIcon(QIcon(self.icon_path))
+        self.dlg.btn_run.clicked.connect(self.onRunClicked)
         MessageUtils.pushLogInfo(TranslationUtils.tr("Dialog params are set up"))
 
     def run(self):
@@ -228,15 +226,11 @@ class ${TemplateClass}:
         if self.dlg is None:
             self.setUpDialog()
 
-        self.dlg.setWindowTitle('%s %s' % (PLUGIN_NAME, PLUGIN_VERSION))
-        self.dlg.lbl_pluginVersion.setText('%s %s' % (PLUGIN_NAME, PLUGIN_VERSION))
-
-        self.dlg.setWindowIcon(QIcon(self.icon_path))
         MessageUtils.pushLogInfo(TranslationUtils.tr("Plugin is running"))
-
-        # Pokazanie okna dialogowego
         self.dlg.show()
+        self.dlg.raise_()
+        self.dlg.activateWindow()
 
-        # Uruchomienie pętli zdarzeń okna dialogowego
-        result = self.dlg.exec()
-        
+    def onRunClicked(self):
+        """Przycisk „Uruchom” - tu umieść główną logikę wtyczki."""
+        MessageUtils.pushMessage(self.iface, TranslationUtils.tr("Plugin logic is not implemented yet"))
