@@ -21,10 +21,10 @@
  *                                                                         *
  ***************************************************************************/
 """
-from .utils import MessageUtils, VersionUtils, TranslationUtils
+from .utils import MessageUtils, TranslationUtils
 from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication, Qt, QTimer
 from qgis.core import Qgis, QgsSettings
-from qgis.PyQt.QtGui import QIcon, QPixmap
+from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction, QToolBar, QDialog
 # Initialize Qt resources from file resources.py
 from .resources import *
@@ -51,7 +51,7 @@ class ${TemplateClass}:
         self.plugin_dir = os.path.dirname(__file__)
 
         # inicjalizacja tłumaczeń
-        locale = QSettings().value('locale/userLocale')[0:2]
+        locale = (QSettings().value('locale/userLocale') or 'pl')[0:2]
         locale_path = os.path.join(
             self.plugin_dir,
             'i18n',
@@ -188,53 +188,44 @@ class ${TemplateClass}:
             )
             self.toolbar.removeAction(action)
 
-        
+        if self.dockwidget is not None:
+            self.iface.removeDockWidget(self.dockwidget)
+            self.dockwidget.deleteLater()
+            self.dockwidget = None
 
     #--------------------------------------------------------------------------
 
     def setUpDockwidgetGUI(self):
         """Ustawia interfejs graficzny dockwidgeta"""
         self.dockwidget = ${TemplateClass}DockWidget()
+        self.dockwidget.setWindowTitle(PLUGIN_NAME)
+        self.dockwidget.setWindowIcon(QIcon(self.icon_path))
         self.dockwidget.closingPlugin.connect(self.onClosePlugin)
-        
-        if os.path.exists(self.icon_path):
-            self.dockwidget.plugin_icon.setPixmap(QPixmap(self.icon_path))
-            self.dockwidget.plugin_icon.setScaledContents(True)
-
-        path_to_logo = os.path.join(self.plugin_dir, 'images', 'logo.svg')
-        if os.path.exists(path_to_logo):
-            self.dockwidget.enviro_logo.setPixmap(QPixmap(path_to_logo))
-            self.dockwidget.enviro_logo.setScaledContents(True)
+        self.dockwidget.btn_run.clicked.connect(self.onRunClicked)
+        self.iface.addDockWidget(Qt.DockWidgetArea.${TemplateDockWidgetArea}, self.dockwidget)
         MessageUtils.pushLogInfo(TranslationUtils.tr("Dockwidget is set up"))
-
-    def setDockArea(self):
-        if VersionUtils.isCompatibleQtVersion(6):
-            self.iface.addDockWidget(Qt.DockWidgetArea.${TemplateDockWidgetArea}, self.dockwidget)
-        else:
-            self.iface.addDockWidget(Qt.${TemplateDockWidgetArea}, self.dockwidget)
 
     def run(self):
         """Metoda zawierająca główne funkcjonalności wtyczki"""
 
-        if not self.pluginIsActive:
-            self.pluginIsActive = True
+        if self.dockwidget is None:
+            self.setUpDockwidgetGUI()
 
-            if self.dockwidget == None:
-               self.setUpDockwidgetGUI()
-            MessageUtils.pushLogInfo(TranslationUtils.tr("Plugin is running"))
+        self.pluginIsActive = True
+        MessageUtils.pushLogInfo(TranslationUtils.tr("Plugin is running"))
+        self.dockwidget.show()
+        self.dockwidget.raise_()
 
-            # pokaz dockwidget
-            self.setDockArea()
-            self.dockwidget.setWindowTitle('%s %s' % (PLUGIN_NAME, PLUGIN_VERSION))
-            self.dockwidget.lbl_pluginVersion.setText('%s %s' % (PLUGIN_NAME, PLUGIN_VERSION))
-            self.dockwidget.show()
+    def onRunClicked(self):
+        """Przycisk „Uruchom” - tu umieść główną logikę wtyczki."""
+        MessageUtils.pushMessage(self.iface, TranslationUtils.tr("Plugin logic is not implemented yet"))
             
 
 #---------------------QGIS Feed------------------------------------
     def showBranchSelectionDialog(self):
         self.qgisfeed_dialog = QgisFeedDialog()
 
-        if self.qgisfeed_dialog.exec() == QDialog.Accepted:
+        if self.qgisfeed_dialog.exec() == QDialog.DialogCode.Accepted:
             self.selected_branch = self.qgisfeed_dialog.comboBox.currentText()
             
             #Zapis w QGIS3.ini

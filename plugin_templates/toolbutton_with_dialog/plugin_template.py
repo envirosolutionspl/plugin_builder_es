@@ -47,7 +47,7 @@ class ToolbuttonWithDialogPluginTemplate(PluginTemplate):
         return {
             # Makefile
             'TemplatePyFiles': '%s_dialog.py' % specification.module_name,
-            'TemplateUiFiles': '%s_dialog_base.ui' % specification.module_name,
+            'TemplateUiFiles': 'ui/%s_dialog_base.ui' % specification.module_name,
             'TemplateExtraFiles': 'icon.png',
             'TemplateQrcFiles': 'resources.qrc',
             'TemplateRcFiles': "resources.py",
@@ -65,7 +65,7 @@ class ToolbuttonWithDialogPluginTemplate(PluginTemplate):
             'module_name_dialog.tmpl':
             '%s_dialog.py' % specification.module_name,
             'module_name_dialog_base.ui.tmpl':
-            '%s_dialog_base.ui' % specification.module_name,
+            os.path.join('ui', '%s_dialog_base.ui' % specification.module_name),
             'resources.tmpl': 'resources.qrc',
         }
         return result
@@ -73,5 +73,4 @@ class ToolbuttonWithDialogPluginTemplate(PluginTemplate):
     def copy_files(self, specification):
         return {
             'icon.png': 'images/icon.png',
-            'logo.svg': 'images/logo.svg'
         }

@@ -1,13 +1,14 @@
 from qgis.core import (
     Qgis,
+    QgsApplication,
     QgsMessageLog,
     QgsNetworkAccessManager,
     QgsBlockingNetworkRequest
 )
 from qgis.PyQt.QtNetwork import QNetworkReply, QNetworkRequest, QNetworkAccessManager 
-from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtCore import QUrl, QUrlQuery, QEventLoop, QTimer, QT_VERSION_STR, QCoreApplication
-from qgis.PyQt.QtWidgets import QMessageBox
+from qgis.PyQt.QtGui import QIcon, QPalette, QPixmap
+from qgis.PyQt.QtCore import Qt, QUrl, QUrlQuery, QEventLoop, QTimer, QT_VERSION_STR, QCoreApplication
+from qgis.PyQt.QtWidgets import QMessageBox, QWidget
 
 from . import PLUGIN_NAME
 from .constants import (
@@ -32,13 +33,71 @@ from .constants import (
 )
 
 from functools import partial
-import os 
+import configparser
+import os
+import re
+
+PLUGIN_DIR = os.path.dirname(__file__)
 
 class TranslationUtils:
     @staticmethod
     def tr(message):
         return QCoreApplication.translate("TranslationUtils", message)
-        
+
+
+class ThemeUtils:
+    """Motyw jasny/ciemny okien wtyczki. Kolory są w arkuszach stylów .ui (selektory [theme="..."])."""
+
+    @staticmethod
+    def isDarkTheme():
+        name = (QgsApplication.themeName() or '').lower()
+        if 'night' in name or 'dark' in name:
+            return True
+        return QgsApplication.palette().color(QPalette.ColorRole.Window).lightness() < 128
+
+    @staticmethod
+    def repolishAll(window):
+        """Po zmianie właściwości "theme" - widgety mogły zostać ostylowane wcześniej."""
+        for widget in [window] + window.findChildren(QWidget):
+            widget.style().unpolish(widget)
+            widget.style().polish(widget)
+            widget.update()
+
+    @staticmethod
+    def setLogo(label, filename, height):
+        pix = QPixmap(os.path.join(PLUGIN_DIR, 'images', filename))
+        if pix.isNull():
+            MessageUtils.pushLogWarning(f"Nie znaleziono pliku logo: images/{filename}")
+            return
+        # Skalowanie z uwzględnieniem skali ekranu, inaczej logo jest rozpikselowane przy 125-150%.
+        dpr = label.devicePixelRatioF()
+        pix = pix.scaledToHeight(int(height * dpr), Qt.TransformationMode.SmoothTransformation)
+        pix.setDevicePixelRatio(dpr)
+        label.setScaledContents(False)
+        label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        label.setPixmap(pix)
+
+    @staticmethod
+    def setLinkColor(labels, color):
+        for label in labels:
+            label.setText(re.sub(r'style="[^"]*"',
+                                 'style="text-decoration:underline; color:%s;"' % color,
+                                 label.text()))
+
+    @staticmethod
+    def readHomepage():
+        parser = configparser.ConfigParser(interpolation=None)
+        try:
+            parser.read(os.path.join(PLUGIN_DIR, 'metadata.txt'), encoding='utf-8')
+        except UnicodeDecodeError as e:
+            MessageUtils.pushLogWarning(f"Nie można odczytać metadata.txt - złe kodowanie (UnicodeDecodeError): {e}")
+            return ''
+        except configparser.Error as e:
+            MessageUtils.pushLogWarning(f"Błędny format metadata.txt ({type(e).__name__}): {e}")
+            return ''
+        return parser.get('general', 'homepage', fallback='')
+
+
 class MessageUtils:
     """
     Klasa pomocnicza do obsługi komunikatów UI oraz logowania w QGIS.

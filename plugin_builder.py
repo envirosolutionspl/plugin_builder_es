@@ -277,7 +277,7 @@ class PluginBuilder:
                 QFile.ReadGroup | QFile.ExeGroup | QFile.ReadOther |
                 QFile.ExeOther)
 
-    def _prepare_enviro_files(self):
+    def _prepare_enviro_files(self, specification):
         """Prepare enviro files."""
 
         # create folders
@@ -285,6 +285,9 @@ class PluginBuilder:
 
         # create utils and constants files
         self._copy_files(ENVIRO_FILES, self.shared_dir, self.plugin_path)
+
+        self.populate_template(
+            specification, self.shared_dir, 'qgis_feed.ui', os.path.join('ui', 'qgis_feed.ui'))
 
         # copying logo and icon happens in the _prepare_specific_files method
 
@@ -548,7 +551,7 @@ class PluginBuilder:
         self._prepare_code(specification)
         if specification.gen_i18n:
             self._prepare_i18n()
-        self._prepare_enviro_files()
+        self._prepare_enviro_files(specification)
         if specification.gen_help:
             self._prepare_help()
             # create the sphinx config file and sample index.rst file
@@ -606,7 +609,7 @@ class PluginBuilder:
         template_file_path = os.path.join(template_dir, template_name)
         output_name_path = os.path.join(self.plugin_path, output_name)
 
-        template_file = open(template_file_path)
+        template_file = open(template_file_path, encoding='utf-8')
         content = template_file.read()
         template_file.close()
         template = Template(content)

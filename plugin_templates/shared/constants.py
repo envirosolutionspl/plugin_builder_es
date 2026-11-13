@@ -65,3 +65,14 @@ INDUSTRIES = {
 }
 
 FEED_URL = 'https://qgisfeed.envirosolutions.pl/'
+
+# ================ Wygląd ================
+
+# Gdy w metadata.txt brak pola homepage
+HOME_LINK = 'https://envirosolutions.pl/wtyczki-qgis/'
+
+FOOTER_LINK_COLORS = {'light': '#4a5250', 'dark': '#b8c0bc'}
+
+FOOTER_LOGOS = {'light': 'es_logo_h.png', 'dark': 'es_logo_white.png'}
+
+FOOTER_LOGO_HEIGHT = 34

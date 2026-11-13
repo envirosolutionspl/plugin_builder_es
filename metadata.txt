@@ -9,44 +9,51 @@
 name=Plugin Builder 3 EnviroSolutions
 about=Create a template for a QGIS plugin
 description=Creates a QGIS EnviroSolutions plugin template for use as a starting point in plugin development
-version=4.0.0
+version=5.0.0
 supportsQt6=true
 qgisMinimumVersion=2.99
 qgisMaximumVersion=4.99
 
-changelog=4.0.0 2026-04-02
-      * Zmieniono ikonę
-      * Przystosowano do Qt5 i Qt6
-      * Automatyczne zczytywanie nazwy wtyczki z metadanych
-      * Automatyczne dodawanie wtyczki do grupy EnviroSolutions w menu
-      * Ustawiono wartości domyślne dla pól w oknie dialogowym
-      * Usunięto kompilacje resources.qrc i dodano kopiowanie skompilowanego pliku resources.py
-      * Tworzone wtyczki zawierają zdefiniowane usprawnienia w kodzie:
-        - Dostosowanie do Qt5 i Qt6
-        - Firmowy Header i Footer
-        - Zawartość wtyczki jest w QScrollArea
-        - Ustawiono min i max rozmiar okna wtyczki 
-        - Poprawiono README
-        - Przystosowano do tłumaczenia
-        - Dodano qgis_feed
-        - Dodano logo firmy i nową ikonę
-        - Automatyczne zczytywanie nazwy wtyczki z metadanych
-        - Automatyczne dodawanie wtyczki do grupy EnviroSolutions w menu
-        - Dodano utils.py i constants.py
-    3.2.1 2019-06-28
-      * Bug fixes
-    3.1 2018-12-31
-      * Fix issue with reload on generated plugins
-    3.0.5 2018-12-31:
-      * Fix issue with reload on generated plugins
-    3.0.4 2018-12-25:
-      * Move dialog creation to run method.
-      * Move help file generation files to proper method
-      * Include missing tags file
-      * Attempt to compile resources.qrc when plugin is generated (requires pyrcc5 in path)
-      * Set deployment directory in Makefile based on user OS (pb_tool is preferred over make)
-      * Check for valid URL format for tracker and repository
-    3.0.3 2018-02-23: Redesign of UI to allow better editing prior to generation.
+changelog=
+  Wersja 5.0.0
+  * Nowy wygląd tworzonych wtyczek zgodny z pozostałymi wtyczkami EnviroSolutions
+  * Obsługa jasnego i ciemnego motywu QGIS w tworzonych wtyczkach
+  * Nowy wygląd okna wyboru branży
+  * Zmiana linków w stopce
+#  Wersja 4.0.0
+#  * Zmieniono ikonę
+#  * Przystosowano do Qt5 i Qt6
+#  * Automatyczne zczytywanie nazwy wtyczki z metadanych
+#  * Automatyczne dodawanie wtyczki do grupy EnviroSolutions w menu
+#  * Ustawiono wartości domyślne dla pól w oknie dialogowym
+#  * Usunięto kompilacje resources.qrc i dodano kopiowanie skompilowanego pliku resources.py
+#  * Tworzone wtyczki zawierają zdefiniowane usprawnienia w kodzie:
+#    - Dostosowanie do Qt5 i Qt6
+#    - Firmowy Header i Footer
+#    - Zawartość wtyczki jest w QScrollArea
+#    - Ustawiono min i max rozmiar okna wtyczki
+#    - Poprawiono README
+#    - Przystosowano do tłumaczenia
+#    - Dodano qgis_feed
+#    - Dodano logo firmy i nową ikonę
+#    - Automatyczne zczytywanie nazwy wtyczki z metadanych
+#    - Automatyczne dodawanie wtyczki do grupy EnviroSolutions w menu
+#    - Dodano utils.py i constants.py
+#  Wersja 3.2.1
+#  * Bug fixes
+#  Wersja 3.1
+#  * Fix issue with reload on generated plugins
+#  Wersja 3.0.5
+#  * Fix issue with reload on generated plugins
+#  Wersja 3.0.4
+#  * Move dialog creation to run method.
+#  * Move help file generation files to proper method
+#  * Include missing tags file
+#  * Attempt to compile resources.qrc when plugin is generated (requires pyrcc5 in path)
+#  * Set deployment directory in Makefile based on user OS (pb_tool is preferred over make)
+#  * Check for valid URL format for tracker and repository
+#  Wersja 3.0.3
+#  * Redesign of UI to allow better editing prior to generation.
 
 homepage=http://g-sherman.github.io/Qgis-Plugin-Builder
 tracker=https://github.com/g-sherman/Qgis-Plugin-Builder/issues

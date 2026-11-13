@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>${TemplateClass}DockWidgetBase</class>
  <widget class="QDockWidget" name="${TemplateClass}DockWidgetBase">
@@ -6,305 +7,570 @@
     <x>0</x>
     <y>0</y>
     <width>470</width>
-    <height>374</height>
+    <height>520</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>${TemplateTitle}</string>
+   <string>${TemplateTitleXml}</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>../images/icon.png</normaloff>../images/icon.png</iconset>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QScrollArea#scrollArea { border: none; background: transparent; }
+QLabel#lbl_title { font-size: 16px; font-weight: 700; }
+QLabel#lbl_subtitle, QLabel#lbl_pluginVersion { font-size: 11px; }
+QToolButton#btn_help, QToolButton#btn_close { border: none; border-radius: 6px; padding: 3px; }
+QLabel#lbl_email, QLabel#lbl_szkolenia { font-size: 10px; }
+QLabel#lbl_es_logo { background: transparent; padding: 0px; }
+
+QFrame[role="card"] { border-radius: 6px; }
+QLabel[role="card-title"] { font-size: 13px; font-weight: 700; padding: 4px 10px; border-top-left-radius: 5px; border-top-right-radius: 5px; }
+QLabel[role="field-title"] { font-weight: 700; }
+QLabel[role="hint"] { font-size: 10px; }
+
+QLineEdit, QComboBox, QAbstractSpinBox { border-radius: 4px; padding: 3px 6px; min-height: 20px; }
+QComboBox::drop-down { subcontrol-origin: padding; subcontrol-position: center right; width: 22px; border: none; }
+QComboBox::down-arrow { image: url(${TemplateQssPrefix}:chevron_down.svg); width: 12px; height: 12px; }
+
+QPushButton { border-radius: 4px; padding: 5px 12px; min-height: 18px; }
+QPushButton[role="primary"] { font-weight: 700; padding: 5px 16px; border: none; }
+QPushButton:focus, QToolButton:focus, QCheckBox:focus, QRadioButton:focus { outline: none; }
+
+QDockWidget[theme="light"] QWidget#dockWidgetContents, QDockWidget[theme="light"] QWidget#content_widget { background: #ffffff; }
+QDockWidget[theme="light"] QLabel, QDockWidget[theme="light"] QCheckBox, QDockWidget[theme="light"] QRadioButton { color: #23282a; }
+QDockWidget[theme="light"] QFrame#header_frame { background: #ffffff; border: none; border-bottom: 2px solid #4c6e4f; }
+QDockWidget[theme="light"] QLabel#lbl_title { color: #3b5a3e; }
+QDockWidget[theme="light"] QLabel#lbl_subtitle, QDockWidget[theme="light"] QLabel#lbl_pluginVersion { color: #6b7572; }
+QDockWidget[theme="light"] QToolButton#btn_help:hover, QDockWidget[theme="light"] QToolButton#btn_close:hover { background: #e8efe8; }
+QDockWidget[theme="light"] QToolButton#btn_help { qproperty-icon: url(${TemplateQssPrefix}:help.svg); }
+QDockWidget[theme="light"] QToolButton#btn_close { qproperty-icon: url(${TemplateQssPrefix}:close.svg); }
+QDockWidget[theme="light"] QFrame#footer_frame { background: #f6f8f6; border: none; border-top: 1px solid #d6ded6; }
+
+QDockWidget[theme="light"] QFrame[role="card"] { background: #ffffff; border: 1px solid #b9c7b9; }
+QDockWidget[theme="light"] QLabel[role="card-title"] { background: #b9c7b9; color: #23282a; }
+QDockWidget[theme="light"] QLabel[role="hint"] { color: #6b7572; }
+
+QDockWidget[theme="light"] QLineEdit, QDockWidget[theme="light"] QComboBox, QDockWidget[theme="light"] QAbstractSpinBox { background: #ffffff; color: #23282a; border: 1px solid #b9c7ba; selection-background-color: #4c6e4f; selection-color: #ffffff; }
+QDockWidget[theme="light"] QLineEdit:focus, QDockWidget[theme="light"] QComboBox:focus, QDockWidget[theme="light"] QAbstractSpinBox:focus { border: 1px solid #4c6e4f; }
+QDockWidget[theme="light"] QLineEdit:disabled, QDockWidget[theme="light"] QComboBox:disabled, QDockWidget[theme="light"] QAbstractSpinBox:disabled { background: #f3f5f3; color: #9aa39e; border-color: #d6ded6; }
+QDockWidget[theme="light"] QComboBox QLineEdit, QDockWidget[theme="light"] QAbstractSpinBox QLineEdit { border: none; padding: 0px; min-height: 0px; background: transparent; }
+QDockWidget[theme="light"] QComboBox QAbstractItemView { background: #ffffff; color: #23282a; border: 1px solid #b9c7ba; selection-background-color: #4c6e4f; selection-color: #ffffff; }
+
+QDockWidget[theme="light"] QPushButton { background: #ffffff; color: #23282a; border: 1px solid #b9c7ba; }
+QDockWidget[theme="light"] QPushButton:hover { border-color: #4c6e4f; color: #3b5a3e; }
+QDockWidget[theme="light"] QPushButton:pressed { background: #eef3ee; }
+QDockWidget[theme="light"] QPushButton:disabled { color: #9aa39e; border-color: #d6ded6; }
+QDockWidget[theme="light"] QPushButton[role="primary"] { background: #4c6e4f; color: #ffffff; border: none; }
+QDockWidget[theme="light"] QPushButton[role="primary"]:hover { background: #5b8260; color: #ffffff; }
+QDockWidget[theme="light"] QPushButton[role="primary"]:pressed { background: #3d5a40; }
+QDockWidget[theme="light"] QPushButton[role="primary"]:disabled { background: #c9d3ca; color: #f4f6f4; }
+
+QDockWidget[theme="dark"] QWidget#dockWidgetContents, QDockWidget[theme="dark"] QWidget#content_widget { background: #2b2d2e; }
+QDockWidget[theme="dark"] QLabel, QDockWidget[theme="dark"] QCheckBox, QDockWidget[theme="dark"] QRadioButton { color: #e6e9e7; }
+QDockWidget[theme="dark"] QFrame#header_frame { background: #2b2d2e; border: none; border-bottom: 2px solid #5b8260; }
+QDockWidget[theme="dark"] QLabel#lbl_title { color: #a9cfac; }
+QDockWidget[theme="dark"] QLabel#lbl_subtitle, QDockWidget[theme="dark"] QLabel#lbl_pluginVersion { color: #9aa4a0; }
+QDockWidget[theme="dark"] QToolButton#btn_help:hover, QDockWidget[theme="dark"] QToolButton#btn_close:hover { background: #2c3a2d; }
+QDockWidget[theme="dark"] QToolButton#btn_help { qproperty-icon: url(${TemplateQssPrefix}:help_dark.svg); }
+QDockWidget[theme="dark"] QToolButton#btn_close { qproperty-icon: url(${TemplateQssPrefix}:close_dark.svg); }
+QDockWidget[theme="dark"] QFrame#footer_frame { background: #303334; border: none; border-top: 1px solid #44494a; }
+
+QDockWidget[theme="dark"] QFrame[role="card"] { background: #262829; border: 1px solid #4c6e4f; }
+QDockWidget[theme="dark"] QLabel[role="card-title"] { background: #4c6e4f; color: #ffffff; }
+QDockWidget[theme="dark"] QLabel[role="hint"] { color: #9aa4a0; }
+
+QDockWidget[theme="dark"] QLineEdit, QDockWidget[theme="dark"] QComboBox, QDockWidget[theme="dark"] QAbstractSpinBox { background: #1f2122; color: #e6e9e7; border: 1px solid #5a6162; selection-background-color: #5b8260; selection-color: #ffffff; }
+QDockWidget[theme="dark"] QLineEdit:focus, QDockWidget[theme="dark"] QComboBox:focus, QDockWidget[theme="dark"] QAbstractSpinBox:focus { border: 1px solid #6f9c73; }
+QDockWidget[theme="dark"] QLineEdit:disabled, QDockWidget[theme="dark"] QComboBox:disabled, QDockWidget[theme="dark"] QAbstractSpinBox:disabled { background: #2b2d2e; color: #6f7773; border-color: #44494a; }
+QDockWidget[theme="dark"] QComboBox QLineEdit, QDockWidget[theme="dark"] QAbstractSpinBox QLineEdit { border: none; padding: 0px; min-height: 0px; background: transparent; }
+QDockWidget[theme="dark"] QComboBox QAbstractItemView { background: #1f2122; color: #e6e9e7; border: 1px solid #5a6162; selection-background-color: #5b8260; selection-color: #ffffff; }
+
+QDockWidget[theme="dark"] QPushButton { background: #303334; color: #e6e9e7; border: 1px solid #5a6162; }
+QDockWidget[theme="dark"] QPushButton:hover { border-color: #6f9c73; color: #a9cfac; }
+QDockWidget[theme="dark"] QPushButton:pressed { background: #2c3a2d; }
+QDockWidget[theme="dark"] QPushButton:disabled { color: #6f7773; border-color: #44494a; }
+QDockWidget[theme="dark"] QPushButton[role="primary"] { background: #5b8260; color: #ffffff; border: none; }
+QDockWidget[theme="dark"] QPushButton[role="primary"]:hover { background: #6f9c73; color: #ffffff; }
+QDockWidget[theme="dark"] QPushButton[role="primary"]:pressed { background: #4c6e4f; }
+QDockWidget[theme="dark"] QPushButton[role="primary"]:disabled { background: #3e4442; color: #8a918e; }
+</string>
+  </property>
+  <property name="theme" stdset="0">
+   <string notr="true">light</string>
   </property>
   <widget class="QWidget" name="dockWidgetContents">
    <property name="minimumSize">
     <size>
-     <width>470</width>
-     <height>254</height>
+     <width>400</width>
+     <height>0</height>
     </size>
    </property>
-   <layout class="QVBoxLayout" name="verticalLayout">
+   <layout class="QVBoxLayout" name="verticalLayout_main">
+    <property name="spacing">
+     <number>0</number>
+    </property>
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
+    <item>
+     <widget class="QFrame" name="header_frame">
+      <property name="frameShape">
+       <enum>QFrame::NoFrame</enum>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_header" stretch="0,1,0,0">
+       <property name="spacing">
+        <number>10</number>
+       </property>
+       <property name="leftMargin">
+        <number>12</number>
+       </property>
+       <property name="topMargin">
+        <number>4</number>
+       </property>
+       <property name="rightMargin">
+        <number>8</number>
+       </property>
+       <property name="bottomMargin">
+        <number>4</number>
+       </property>
+       <item>
+        <widget class="QLabel" name="lbl_plugin_icon">
+         <property name="minimumSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="pixmap">
+          <pixmap>../images/icon.png</pixmap>
+         </property>
+         <property name="scaledContents">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_title">
+         <property name="spacing">
+          <number>1</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="lbl_title">
+           <property name="text">
+            <string>${TemplateTitleXml}</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_subtitle">
+           <property name="spacing">
+            <number>4</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="lbl_subtitle">
+             <property name="text">
+              <string>${TemplateDescriptionXml} ·</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="lbl_pluginVersion">
+             <property name="text">
+              <string>v${TemplateVersion}</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_subtitle">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>10</width>
+               <height>10</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QToolButton" name="btn_help">
+         <property name="cursor">
+          <cursorShape>PointingHandCursor</cursorShape>
+         </property>
+         <property name="toolTip">
+          <string>Pomoc – strona wtyczki</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>../images/help.svg</normaloff>../images/help.svg</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>20</width>
+           <height>20</height>
+          </size>
+         </property>
+         <property name="autoRaise">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="btn_close">
+         <property name="cursor">
+          <cursorShape>PointingHandCursor</cursorShape>
+         </property>
+         <property name="toolTip">
+          <string>Zamknij wtyczkę</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>../images/close.svg</normaloff>../images/close.svg</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>20</width>
+           <height>20</height>
+          </size>
+         </property>
+         <property name="autoRaise">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
     <item>
      <widget class="QScrollArea" name="scrollArea">
+      <property name="frameShape">
+       <enum>QFrame::NoFrame</enum>
+      </property>
       <property name="widgetResizable">
        <bool>true</bool>
       </property>
-      <widget class="QWidget" name="scrollAreaWidgetContents_2">
-       <property name="geometry">
-        <rect>
-         <x>0</x>
-         <y>0</y>
-         <width>446</width>
-         <height>324</height>
-        </rect>
-       </property>
-       <layout class="QVBoxLayout" name="verticalLayout_2">
+      <widget class="QWidget" name="content_widget">
+       <layout class="QVBoxLayout" name="verticalLayout_content">
+        <property name="spacing">
+         <number>8</number>
+        </property>
+        <property name="leftMargin">
+         <number>8</number>
+        </property>
+        <property name="topMargin">
+         <number>8</number>
+        </property>
+        <property name="rightMargin">
+         <number>8</number>
+        </property>
+        <property name="bottomMargin">
+         <number>8</number>
+        </property>
         <item>
-         <layout class="QVBoxLayout" name="verticalLayout_3">
-          <property name="spacing">
-           <number>20</number>
+         <widget class="QFrame" name="card_main">
+          <property name="frameShape">
+           <enum>QFrame::NoFrame</enum>
           </property>
-          <property name="sizeConstraint">
-           <enum>QLayout::SetDefaultConstraint</enum>
+          <property name="role" stdset="0">
+           <string notr="true">card</string>
           </property>
-          <item>
-           <layout class="QVBoxLayout" name="verticalLayout_4">
-            <item>
-             <widget class="QGroupBox" name="groupBox">
-              <property name="minimumSize">
-               <size>
-                <width>420</width>
-                <height>60</height>
-               </size>
-              </property>
-              <property name="title">
-               <string>Opis funkcjonalności</string>
-              </property>
-              <widget class="QLabel" name="label">
-               <property name="geometry">
-                <rect>
-                 <x>44</x>
-                 <y>30</y>
-                 <width>291</width>
-                 <height>20</height>
-                </rect>
-               </property>
-               <property name="text">
-                <string>${TemplateDescription}</string>
-               </property>
-              </widget>
-             </widget>
-            </item>
-            <item>
-             <spacer name="verticalSpacer">
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
-              </property>
-              <property name="sizeType">
-               <enum>QSizePolicy::MinimumExpanding</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>0</width>
-                <height>0</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item>
-             <widget class="QPushButton" name="btn_close">
-              <property name="text">
-               <string>Zamknij</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <widget class="QWidget" name="widget" native="true">
-            <property name="minimumSize">
-             <size>
-              <width>420</width>
-              <height>80</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>70</height>
-             </size>
-            </property>
-            <layout class="QVBoxLayout" name="verticalLayout_5">
+          <layout class="QVBoxLayout" name="verticalLayout_card_main">
+           <property name="spacing">
+            <number>0</number>
+           </property>
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="lbl_card_main_title">
+             <property name="text">
+              <string>Parametry</string>
+             </property>
+             <property name="role" stdset="0">
+              <string notr="true">card-title</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <layout class="QVBoxLayout" name="verticalLayout_card_main_body">
+             <property name="spacing">
+              <number>6</number>
+             </property>
+             <property name="leftMargin">
+              <number>10</number>
+             </property>
+             <property name="topMargin">
+              <number>8</number>
+             </property>
+             <property name="rightMargin">
+              <number>10</number>
+             </property>
+             <property name="bottomMargin">
+              <number>10</number>
+             </property>
              <item>
-              <widget class="Line" name="line">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
+              <widget class="QLabel" name="lbl_hint">
+               <property name="text">
+                <string>Krótko opisz, co robi wtyczka i jak z niej korzystać.</string>
+               </property>
+               <property name="wordWrap">
+                <bool>true</bool>
+               </property>
+               <property name="role" stdset="0">
+                <string notr="true">hint</string>
                </property>
               </widget>
              </item>
              <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_8">
-               <property name="spacing">
-                <number>3</number>
+              <widget class="QLabel" name="lbl_example_combo">
+               <property name="text">
+                <string>Warstwa wejściowa</string>
                </property>
-               <property name="sizeConstraint">
-                <enum>QLayout::SetDefaultConstraint</enum>
+               <property name="role" stdset="0">
+                <string notr="true">field-title</string>
                </property>
-               <property name="leftMargin">
-                <number>0</number>
+              </widget>
+             </item>
+             <item>
+              <widget class="QComboBox" name="cmb_example"/>
+             </item>
+             <item>
+              <widget class="QLabel" name="lbl_example_edit">
+               <property name="text">
+                <string>Wartość</string>
                </property>
-               <property name="topMargin">
-                <number>0</number>
+               <property name="role" stdset="0">
+                <string notr="true">field-title</string>
                </property>
-               <property name="rightMargin">
-                <number>5</number>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="le_example">
+               <property name="placeholderText">
+                <string>np. 100</string>
                </property>
-               <property name="bottomMargin">
-                <number>0</number>
-               </property>
-               <item alignment="Qt::AlignLeft|Qt::AlignVCenter">
-                <widget class="QLabel" name="plugin_icon">
-                 <property name="maximumSize">
-                  <size>
-                   <width>50</width>
-                   <height>50</height>
-                  </size>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="scaledContents">
-                  <bool>true</bool>
-                 </property>
-                 <property name="margin">
-                  <number>9</number>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <layout class="QGridLayout" name="gridLayout_6">
-                 <property name="horizontalSpacing">
-                  <number>7</number>
-                 </property>
-                 <property name="verticalSpacing">
-                  <number>0</number>
-                 </property>
-                 <item row="1" column="0" colspan="2">
-                  <widget class="QLabel" name="lbl_copyrights">
-                   <property name="maximumSize">
-                    <size>
-                     <width>16777215</width>
-                     <height>15</height>
-                    </size>
-                   </property>
-                   <property name="font">
-                    <font>
-                     <pointsize>8</pointsize>
-                    </font>
-                   </property>
-                   <property name="text">
-                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;© ${TemplateYear} ${TemplateAuthor}&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                   </property>
-                   <property name="textFormat">
-                    <enum>Qt::RichText</enum>
-                   </property>
-                   <property name="alignment">
-                    <set>Qt::AlignCenter</set>
-                   </property>
-                   <property name="openExternalLinks">
-                    <bool>true</bool>
-                   </property>
-                   <property name="textInteractionFlags">
-                    <set>Qt::TextBrowserInteraction</set>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="0" colspan="2">
-                  <widget class="QLabel" name="lbl_pluginVersion">
-                   <property name="maximumSize">
-                    <size>
-                     <width>16777215</width>
-                     <height>13</height>
-                    </size>
-                   </property>
-                   <property name="font">
-                    <font>
-                     <pointsize>8</pointsize>
-                    </font>
-                   </property>
-                   <property name="text">
-                    <string>${TemplateTitle} ${TemplateVersion}</string>
-                   </property>
-                   <property name="alignment">
-                    <set>Qt::AlignCenter</set>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="2" column="1" alignment="Qt::AlignLeft|Qt::AlignVCenter">
-                  <widget class="QLabel" name="lbl_szkolenia">
-                   <property name="font">
-                    <font>
-                     <pointsize>8</pointsize>
-                    </font>
-                   </property>
-                   <property name="text">
-                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;https://envirosolutions.pl/oferta-szkoleniowa/?utm_source=stopka&amp;utm_medium=wtyczka&amp;utm_campaign=organic&amp;utm_term=${TemplateModuleName}&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;SZKOLENIA GIS&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                   </property>
-                   <property name="textFormat">
-                    <enum>Qt::RichText</enum>
-                   </property>
-                   <property name="alignment">
-                    <set>Qt::AlignCenter</set>
-                   </property>
-                   <property name="openExternalLinks">
-                    <bool>true</bool>
-                   </property>
-                   <property name="textInteractionFlags">
-                    <set>Qt::TextBrowserInteraction</set>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="2" column="0" alignment="Qt::AlignRight">
-                  <widget class="QLabel" name="lbl_email">
-                   <property name="maximumSize">
-                    <size>
-                     <width>16777215</width>
-                     <height>15</height>
-                    </size>
-                   </property>
-                   <property name="font">
-                    <font>
-                     <pointsize>8</pointsize>
-                    </font>
-                   </property>
-                   <property name="text">
-                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;https://envirosolutions.pl/systemy-opensource-gis/?utm_source=stopka&amp;utm_medium=wtyczka&amp;utm_campaign=organic&amp;utm_term=${TemplateModuleName}&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;SYSTEMY GIS&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                   </property>
-                   <property name="textFormat">
-                    <enum>Qt::RichText</enum>
-                   </property>
-                   <property name="alignment">
-                    <set>Qt::AlignCenter</set>
-                   </property>
-                   <property name="openExternalLinks">
-                    <bool>true</bool>
-                   </property>
-                   <property name="textInteractionFlags">
-                    <set>Qt::TextBrowserInteraction</set>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-               <item alignment="Qt::AlignRight|Qt::AlignVCenter">
-                <widget class="QLabel" name="enviro_logo">
-                 <property name="maximumSize">
-                  <size>
-                   <width>60</width>
-                   <height>60</height>
-                  </size>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="scaledContents">
-                  <bool>true</bool>
-                 </property>
-                 <property name="margin">
-                  <number>9</number>
-                 </property>
-                </widget>
-               </item>
-              </layout>
+              </widget>
              </item>
             </layout>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_actions">
+          <property name="spacing">
+           <number>6</number>
+          </property>
+          <item>
+           <spacer name="horizontalSpacer_actions">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>10</width>
+              <height>10</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btn_clear">
+            <property name="cursor">
+             <cursorShape>PointingHandCursor</cursorShape>
+            </property>
+            <property name="text">
+             <string>Wyczyść</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btn_run">
+            <property name="cursor">
+             <cursorShape>PointingHandCursor</cursorShape>
+            </property>
+            <property name="text">
+             <string>Uruchom</string>
+            </property>
+            <property name="role" stdset="0">
+             <string notr="true">primary</string>
+            </property>
            </widget>
           </item>
          </layout>
+        </item>
+        <item>
+         <spacer name="verticalSpacer_content">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>10</width>
+            <height>0</height>
+           </size>
+          </property>
+         </spacer>
         </item>
        </layout>
       </widget>
      </widget>
     </item>
+    <item>
+     <widget class="QFrame" name="footer_frame">
+      <property name="frameShape">
+       <enum>QFrame::NoFrame</enum>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_footer">
+       <property name="spacing">
+        <number>6</number>
+       </property>
+       <property name="leftMargin">
+        <number>10</number>
+       </property>
+       <property name="topMargin">
+        <number>6</number>
+       </property>
+       <property name="rightMargin">
+        <number>10</number>
+       </property>
+       <property name="bottomMargin">
+        <number>6</number>
+       </property>
+       <item>
+        <widget class="QLabel" name="lbl_email">
+         <property name="text">
+          <string>&lt;a href=&quot;https://envirosolutions.pl/?utm_source=plugins&amp;utm_medium=referral&amp;utm_campaign=${TemplateModuleName}&amp;utm_content=systemy_wsparcie#uslugi&quot; style=&quot;text-decoration:underline;&quot;&gt;SYSTEMY I WSPARCIE GIS&lt;/a&gt;</string>
+         </property>
+         <property name="textFormat">
+          <enum>Qt::RichText</enum>
+         </property>
+         <property name="openExternalLinks">
+          <bool>true</bool>
+         </property>
+         <property name="textInteractionFlags">
+          <set>Qt::TextBrowserInteraction</set>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_footerL">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>4</width>
+           <height>10</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QLabel" name="lbl_es_logo">
+         <property name="minimumSize">
+          <size>
+           <width>156</width>
+           <height>34</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>156</width>
+           <height>34</height>
+          </size>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="pixmap">
+          <pixmap>../images/es_logo_h.png</pixmap>
+         </property>
+         <property name="scaledContents">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_footerR">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>4</width>
+           <height>10</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QLabel" name="lbl_szkolenia">
+         <property name="text">
+          <string>&lt;a href=&quot;https://envirosolutions.pl/oferta-szkoleniowa/?utm_source=plugins&amp;utm_medium=referral&amp;utm_campaign=${TemplateModuleName}&amp;utm_content=szkolenia_gis&quot; style=&quot;text-decoration:underline;&quot;&gt;SZKOLENIA GIS&lt;/a&gt;</string>
+         </property>
+         <property name="textFormat">
+          <enum>Qt::RichText</enum>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignVCenter</set>
+         </property>
+         <property name="openExternalLinks">
+          <bool>true</bool>
+         </property>
+         <property name="textInteractionFlags">
+          <set>Qt::TextBrowserInteraction</set>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
    </layout>
   </widget>
  </widget>
+ <tabstops>
+  <tabstop>cmb_example</tabstop>
+  <tabstop>le_example</tabstop>
+  <tabstop>btn_clear</tabstop>
+  <tabstop>btn_run</tabstop>
+  <tabstop>btn_help</tabstop>
+  <tabstop>btn_close</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
