@@ -75,4 +75,4 @@ FOOTER_LINK_COLORS = {'light': '#4a5250', 'dark': '#b8c0bc'}
 
 FOOTER_LOGOS = {'light': 'es_logo_h.png', 'dark': 'es_logo_white.png'}
 
-FOOTER_LOGO_HEIGHT = 26
+FOOTER_LOGO_HEIGHT = 34
