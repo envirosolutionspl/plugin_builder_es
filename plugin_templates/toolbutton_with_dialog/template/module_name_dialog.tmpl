@@ -46,29 +46,6 @@ QDir.addSearchPath(QSS_IMAGES_PREFIX, os.path.join(PLUGIN_DIR, 'images'))
 FORM_CLASS, _ = uic.loadUiType(os.path.join(PLUGIN_DIR, 'ui', '${TemplateModuleName}_dialog_base.ui'))
 
 
-def cursorForEdges(edges):
-    if len(edges) == 1:
-        if edges[0] in (Qt.Edge.LeftEdge, Qt.Edge.RightEdge):
-            return Qt.CursorShape.SizeHorCursor
-        return Qt.CursorShape.SizeVerCursor
-    main_diagonal = ((Qt.Edge.LeftEdge in edges and Qt.Edge.TopEdge in edges)
-                     or (Qt.Edge.RightEdge in edges and Qt.Edge.BottomEdge in edges))
-    return Qt.CursorShape.SizeFDiagCursor if main_diagonal else Qt.CursorShape.SizeBDiagCursor
-
-
-def resizedGeometry(geom, delta, edges, min_w, min_h):
-    geom = QRect(geom)
-    if Qt.Edge.LeftEdge in edges:
-        geom.setLeft(min(geom.left() + delta.x(), geom.right() - min_w + 1))
-    if Qt.Edge.RightEdge in edges:
-        geom.setRight(max(geom.right() + delta.x(), geom.left() + min_w - 1))
-    if Qt.Edge.TopEdge in edges:
-        geom.setTop(min(geom.top() + delta.y(), geom.bottom() - min_h + 1))
-    if Qt.Edge.BottomEdge in edges:
-        geom.setBottom(max(geom.bottom() + delta.y(), geom.top() + min_h - 1))
-    return geom
-
-
 class ResizeHandle(QtWidgets.QWidget):
     """Niewidoczny uchwyt do zmiany rozmiaru okna, leżący nad treścią przy krawędzi lub w rogu."""
 
@@ -77,7 +54,30 @@ class ResizeHandle(QtWidgets.QWidget):
         self.window_ = window
         self.edges = edges
         self._start = None
-        self.setCursor(cursorForEdges(edges))
+        self.setCursor(self.cursorForEdges(edges))
+
+    @staticmethod
+    def cursorForEdges(edges):
+        if len(edges) == 1:
+            if edges[0] in (Qt.Edge.LeftEdge, Qt.Edge.RightEdge):
+                return Qt.CursorShape.SizeHorCursor
+            return Qt.CursorShape.SizeVerCursor
+        main_diagonal = ((Qt.Edge.LeftEdge in edges and Qt.Edge.TopEdge in edges)
+                         or (Qt.Edge.RightEdge in edges and Qt.Edge.BottomEdge in edges))
+        return Qt.CursorShape.SizeFDiagCursor if main_diagonal else Qt.CursorShape.SizeBDiagCursor
+
+    @staticmethod
+    def resizedGeometry(geom, delta, edges, min_w, min_h):
+        geom = QRect(geom)
+        if Qt.Edge.LeftEdge in edges:
+            geom.setLeft(min(geom.left() + delta.x(), geom.right() - min_w + 1))
+        if Qt.Edge.RightEdge in edges:
+            geom.setRight(max(geom.right() + delta.x(), geom.left() + min_w - 1))
+        if Qt.Edge.TopEdge in edges:
+            geom.setTop(min(geom.top() + delta.y(), geom.bottom() - min_h + 1))
+        if Qt.Edge.BottomEdge in edges:
+            geom.setBottom(max(geom.bottom() + delta.y(), geom.top() + min_h - 1))
+        return geom
 
     def mousePressEvent(self, event):
         if event.button() != Qt.MouseButton.LeftButton:
@@ -96,7 +96,8 @@ class ResizeHandle(QtWidgets.QWidget):
         hint = self.window_.minimumSizeHint()
         min_w = max(self.window_.minimumWidth(), hint.width())
         min_h = max(self.window_.minimumHeight(), hint.height())
-        self.window_.setGeometry(resizedGeometry(start_geom, QCursor.pos() - start_pos, self.edges, min_w, min_h))
+        self.window_.setGeometry(
+            self.resizedGeometry(start_geom, QCursor.pos() - start_pos, self.edges, min_w, min_h))
 
     def mouseReleaseEvent(self, event):
         self._start = None
