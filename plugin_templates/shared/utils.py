@@ -153,7 +153,7 @@ class MessageUtils:
         iface.messageBar().pushMessage(
             'Informacja',
             message,
-            level=Qgis.Info,
+            level=Qgis.MessageLevel.Info,
             duration=10
         )
 
@@ -162,7 +162,7 @@ class MessageUtils:
         iface.messageBar().pushMessage(
             "Sukces",
             message,
-            level=Qgis.Success,
+            level=Qgis.MessageLevel.Success,
             duration=0
         )
 
@@ -171,7 +171,7 @@ class MessageUtils:
         iface.messageBar().pushMessage(
             'Ostrzeżenie',
             message,
-            level=Qgis.Warning,
+            level=Qgis.MessageLevel.Warning,
             duration=10
         )
 
@@ -180,7 +180,7 @@ class MessageUtils:
         QgsMessageLog.logMessage(
             message,
             tag=PLUGIN_NAME,
-            level=Qgis.Info
+            level=Qgis.MessageLevel.Info
         )
 
     @staticmethod
@@ -188,7 +188,7 @@ class MessageUtils:
         QgsMessageLog.logMessage(
             message,
             tag=PLUGIN_NAME,
-            level=Qgis.Warning
+            level=Qgis.MessageLevel.Warning
         )
 
     @staticmethod
@@ -196,7 +196,7 @@ class MessageUtils:
         QgsMessageLog.logMessage(
             message,
             tag=PLUGIN_NAME,
-            level=Qgis.Critical
+            level=Qgis.MessageLevel.Critical
         )
 
 class VersionUtils:
@@ -312,7 +312,7 @@ class NetworkUtils:
         error_code = blocking_request.get(request)
         reply_content = blocking_request.reply()
         
-        if error_code != QgsBlockingNetworkRequest.NoError:
+        if error_code != QgsBlockingNetworkRequest.ErrorCode.NoError:
             return self._handleReplyError(reply_content, url)
 
         raw_data = reply_content.content()
@@ -391,4 +391,3 @@ class NetworkUtils:
 
         reply.deleteLater()
         return True, True
-

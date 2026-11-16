@@ -146,9 +146,9 @@ class PluginBuilderDialog(QDialog, FORM_CLASS):
            self.qgis_minimum_version.text() == '' or \
            self.author.text() == '' or \
            self.email_address.text() == '':
-                message = (
-                    'Some required fields are missing. '
-                    'Please complete the form.\n')
+            message = (
+                'Some required fields are missing. '
+                'Please complete the form.\n')
         # validate plugin name
         # check that we have only ascii char in class name
         if not all(ord(c) < 128 for c in self.class_name.text()):
@@ -249,7 +249,7 @@ class PluginBuilderDialog(QDialog, FORM_CLASS):
 
     def keyPressEvent(self, event):
         # prevent escape from closing the dialog
-        escape_key = Qt.Key.Key_Escape if hasattr(Qt, 'Key') else Qt.Key_Escape
+        escape_key = Qt.Key.Key_Escape
         if event.key() == escape_key:
-            #QDialog.keyPressEvent(event)
+            # QDialog.keyPressEvent(event)
             pass

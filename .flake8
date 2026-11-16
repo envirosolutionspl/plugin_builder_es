@@ -3,4 +3,4 @@
 extend-ignore = E302, E303, E501, F401, F405, W291, W293
 
 # Folder exclude
-exclude = libs
+exclude = libs, resources.py
