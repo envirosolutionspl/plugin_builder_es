@@ -15,7 +15,7 @@ folderX means plugin_folder/folderX
     file2: folder2,
 }
 '''
-ENVIRO_FILES={
+ENVIRO_FILES = {
     'utils.py': 'default',
     'constants.py': 'default',
     'qgis_feed.py': 'default',
@@ -30,7 +30,7 @@ ENVIRO_FILES={
     'images/es_logo_white.png': 'default',
 }
 
-ENVIRO_FOLDERS=[
+ENVIRO_FOLDERS = [
     'modules',
     'images',
     'ui'
