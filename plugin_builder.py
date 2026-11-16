@@ -1,4 +1,4 @@
-#coding=utf-8
+# coding=utf-8
 """
 /***************************************************************************
     PluginBuilder
@@ -32,18 +32,19 @@ from .utils import VersionUtils
 # Import the PyQt and QGIS libraries
 from qgis.PyQt.QtCore import QFileInfo, QUrl, QFile, QDir, QSettings
 from qgis.PyQt.QtWidgets import (
-    QAction, QFileDialog, QMessageBox, QToolBar, QDialog )
+    QAction, QFileDialog, QMessageBox, QToolBar, QDialog)
 
-from qgis.PyQt.QtGui import (QIcon,
-                         QDesktopServices,
-                         QStandardItemModel,
-                         QStandardItem
-                         )
+from qgis.PyQt.QtGui import (
+    QIcon,
+    QDesktopServices,
+    QStandardItemModel,
+    QStandardItem
+)
 from qgis.core import QgsApplication
 # Initialize Qt resources from file resources.py
 # Do not remove this import even though your IDE / pylint may report it unused
 # noinspection PyUnresolvedReferences
-from .resources import *  #pylint: disable=W0401,W0614
+from .resources import *  # noqa: F403  # pylint: disable=W0401,W0614
 
 # Import the code for the dialog
 from .plugin_builder_dialog import PluginBuilderDialog
@@ -110,7 +111,8 @@ class PluginBuilder:
         add_to_toolbar=True,
         status_tip=None,
         whats_this=None,
-        parent=None):
+        parent=None,
+    ):
         """Add a toolbar icon to the toolbar.
 
         :param icon_path: Path to the icon for this action. Can be a resource
@@ -272,10 +274,11 @@ class PluginBuilder:
             # noinspection PyCallByClass,PyTypeChecker
             QFile.setPermissions(
                 os.path.join(self.plugin_path, 'plugin_upload.py'),
-                QFile.ReadOwner | QFile.WriteOwner | QFile.ExeOwner |
-                QFile.ReadUser | QFile.WriteUser | QFile.ExeUser |
-                QFile.ReadGroup | QFile.ExeGroup | QFile.ReadOther |
-                QFile.ExeOther)
+                QFile.Permission.ReadOwner | QFile.Permission.WriteOwner |
+                QFile.Permission.ExeOwner | QFile.Permission.ReadUser |
+                QFile.Permission.WriteUser | QFile.Permission.ExeUser |
+                QFile.Permission.ReadGroup | QFile.Permission.ExeGroup |
+                QFile.Permission.ReadOther | QFile.Permission.ExeOther)
 
     def _prepare_enviro_files(self, specification):
         """Prepare enviro files."""
@@ -509,7 +512,7 @@ class PluginBuilder:
                 seltags.append(tag.data())
             taglist = ", ".join(seltags)
             self.dialog.tags.setText(taglist)
-        #QMessageBox.information(None, "Selection", seltags)
+        # QMessageBox.information(None, "Selection", seltags)
 
     def run(self):
         """Run method that performs all the real work"""
@@ -569,8 +572,8 @@ class PluginBuilder:
 
         
 
-        #resource = QFile(os.path.join(self.template_dir, 'resources.qrc'))
-        #resource.copy(os.path.join(self.plugin_path, 'resources.qrc'))
+        # resource = QFile(os.path.join(self.template_dir, 'resources.qrc'))
+        # resource.copy(os.path.join(self.plugin_path, 'resources.qrc'))
 
         self._prepare_specific_files(specification)
 
@@ -622,7 +625,7 @@ class PluginBuilder:
         """Display application help to the user."""
         help_file = 'file:///%s/help/index.html' % self.plugin_builder_path
         # For testing path:
-        #QMessageBox.information(None, 'Help File', help_file)
+        # QMessageBox.information(None, 'Help File', help_file)
         # noinspection PyCallByClass,PyTypeChecker
         QDesktopServices.openUrl(QUrl(help_file))
 

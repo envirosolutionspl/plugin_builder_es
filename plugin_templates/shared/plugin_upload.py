@@ -7,10 +7,10 @@
 
 import sys
 import getpass
-import xmlrpc.client
+# Połączenie wyłącznie z plugins.qgis.org po HTTPS (zaufany serwer).
+import xmlrpc.client  # nosec B411
 from optparse import OptionParser
 
-standard_library.install_aliases()
 
 # Configuration
 PROTOCOL = 'https'

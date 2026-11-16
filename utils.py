@@ -1,11 +1,13 @@
     
 from qgis.PyQt.QtWidgets import QMessageBox
+from qgis.PyQt.QtGui import QIcon
 from qgis.core import (
+    Qgis,
     QgsMessageLog
 )
 from . import PLUGIN_NAME
 from .constants import QT_VER
-from qgis.PyQt.QtCore import QT_VERSION_STR
+from qgis.PyQt.QtCore import QT_VERSION_STR, QCoreApplication
 
 def tr(self, message):
     """Get the translation for a string using Qt translation API.
@@ -70,7 +72,7 @@ class MessageUtils:
         iface.messageBar().pushMessage(
             'Informacja',
             message,
-            level=Qgis.Info,
+            level=Qgis.MessageLevel.Info,
             duration=10
         )
 
@@ -79,7 +81,7 @@ class MessageUtils:
         iface.messageBar().pushMessage(
             "Sukces",
             message,
-            level=Qgis.Success,
+            level=Qgis.MessageLevel.Success,
             duration=0
         )
 
@@ -88,7 +90,7 @@ class MessageUtils:
         iface.messageBar().pushMessage(
             'Ostrzeżenie',
             message,
-            level=Qgis.Warning,
+            level=Qgis.MessageLevel.Warning,
             duration=10
         )
 
@@ -97,7 +99,7 @@ class MessageUtils:
         QgsMessageLog.logMessage(
             message,
             tag=PLUGIN_NAME,
-            level=Qgis.Info
+            level=Qgis.MessageLevel.Info
         )
 
     @staticmethod
@@ -105,7 +107,7 @@ class MessageUtils:
         QgsMessageLog.logMessage(
             message,
             tag=PLUGIN_NAME,
-            level=Qgis.Warning
+            level=Qgis.MessageLevel.Warning
         )
 
     @staticmethod
@@ -113,7 +115,7 @@ class MessageUtils:
         QgsMessageLog.logMessage(
             message,
             tag=PLUGIN_NAME,
-            level=Qgis.Critical
+            level=Qgis.MessageLevel.Critical
         )
 
 class VersionUtils:
